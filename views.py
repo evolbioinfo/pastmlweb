@@ -5,8 +5,8 @@ from django.db.models import FilePathField
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 
-from pastmlapp.forms import QuestionForm, FeedbackForm
-from pastmlapp.models import Question
+from pastmlapp.forms import FeedbackForm, TreeDataForm, AnalysisForm
+from pastmlapp.models import TreeData, Analysis, Column
 
 from .tasks import send_feedback_email_task, apply_pastml
 
@@ -33,47 +33,67 @@ def index(request):
     return render(request, 'pastmlapp/index.html', context)
 
 
-def detail(request, question_id):
-    question = get_object_or_404(Question, pk=question_id)
-    data = 'Could not load request {}'.format(question_id)
-    with open(question.html_compressed, 'r') as f:
+def detail(request, id):
+    analysis = get_object_or_404(Analysis, pk=id)
+    data = 'Could not load PASTML analysis {}'.format(id)
+    with open(analysis.html_compressed, 'r') as f:
         data = f.read()
     return render(request, 'pastmlapp/detail.html', {'text': data})
 
 
-def results(request, question_id):
+def results(request, id):
     response = "You're looking at the results of question %s."
-    return HttpResponse(response % question_id)
+    return HttpResponse(response % id)
 
 
 def pastml(request):
     if request.method == 'POST':
-        question = Question()
-        form = QuestionForm(instance=question, data=request.POST, files=request.FILES)
+        tree_data = TreeData()
+        form = TreeDataForm(instance=tree_data, data=request.POST, files=request.FILES)
         if form.is_valid():
             form.save()
-            columns = form.cleaned_data['columns'].split(' ') if form.cleaned_data['columns'] else None
-            # The delay is used to asynchronously process the task
-            tree = question.tree.url
+            return redirect('pastmlapp:analysis', id=tree_data.id)
+    else:
+        form = TreeDataForm
+    return render(request, 'pastmlapp/pastml.html', {
+        'form': form
+    })
+
+
+def analysis(request, id):
+    tree_data = TreeData.objects.get(pk=id)
+    analysis = Analysis(tree_data=tree_data)
+
+    if request.method == 'POST':
+        form = AnalysisForm(instance=analysis, data=request.POST, extra=int(request.POST.get('extra_field_count')))
+        if form.is_valid():
+            form.save()
+
+            tree = tree_data.tree.url
             html_compressed = '{}.compressed.html'.format(tree)
-            task = apply_pastml.delay(question.data.url, tree,
-                                      form.cleaned_data['data_sep'] if form.cleaned_data['data_sep'] else '\t',
-                                      form.cleaned_data['id_index'],
+
+            columns = [column.column for column in Column.objects.filter(
+                analysis=analysis
+            )]
+            task = apply_pastml.delay(tree_data.data.url, tree,
+                                      tree_data.data_sep if tree_data.data_sep else '\t',
+                                      tree_data.id_index,
                                       columns, form.cleaned_data['date_column'], form.cleaned_data['model'],
-                                      form.cleaned_data['prediction_method'], form.cleaned_data['name_column'],
+                                      form.cleaned_data['prediction_method'], columns[0],
                                       html_compressed, '{}.html'.format(tree))
             while task.state not in ('SUCCESS', 'FAILURE'):
                 sleep(0.1)
             if task.failed():
                 # Insert error message and return to the input form
-                return render(request, 'pastmlapp/pastml.html', {
+                return render(request, 'pastmlapp/analysis.html', {
                     'form': form, 'error': task.state
                 })
-            question.html_compressed = html_compressed
-            question.save()
-            return redirect('pastmlapp:detail', question_id=question.id)
+            analysis.html_compressed = html_compressed
+            analysis.save()
+
+            return redirect('pastmlapp:detail', id=analysis.id)
     else:
-        form = QuestionForm
-    return render(request, 'pastmlapp/pastml.html', {
+        form = AnalysisForm(instance=analysis)
+    return render(request, 'pastmlapp/analysis.html', {
         'form': form
     })

@@ -1,0 +1,88 @@
+<head>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+</head>
+
+
+{% block content %}
+<form id="form" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+{{ form.non_field_errors }}
+    <div class="'fields">
+<div class="fieldWrapper">
+    {{ form.date_column.errors }}
+    <label for="{{ form.date_column.id_for_label }}">{{form.date_column.label_tag}}</label>
+    {{ form.date_column }} {{form.date_column.help_text}}
+</div>
+<div class="fieldWrapper">
+    {{ form.model.errors }}
+    <label for="{{ form.model.id_for_label }}">{{form.model.label_tag}}</label>
+    {{ form.model }} {{form.model.help_text}}
+</div>
+<div class="fieldWrapper">
+    {{ form.prediction_method.errors }}
+    <label for="{{ form.prediction_method.id_for_label }}">{{form.prediction_method.label_tag}}</label>
+    {{ form.prediction_method }} {{form.prediction_method.help_text}}
+</div>
+<div class="fieldWrapper">
+    {{ form.email.errors }}
+    <label for="{{ form.email.id_for_label }}">{{form.email.label_tag}}</label>
+    {{ form.email }} {{form.email.help_text}}
+</div>
+<div class="fieldWrapper">
+    {{ form.title.errors }}
+    <label for="{{ form.title.id_for_label }}">{{form.title.label_tag}}</label>
+    {{ form.title }} {{form.title.help_text}}
+</div>
+<div class="fieldWrapper column" id="column_0">
+    {{ form.column_0.errors }}
+    <label for="{{ form.column_0.id_for_label }}">Column</label>
+    {{ form.column_0 }} Name of the column whose ancestral states should be reconstructed<input type="button" value="Add Column" class="add-another">
+</div>
+    </div>
+<button type="submit">Reconstruct ancestors</button>
+
+    {% for hidden in form.hidden_fields %}
+{{ hidden }}
+{% endfor %}
+</form>
+{% endblock %}
+
+<script>
+
+function add() {
+
+    n = Number($("[name=extra_field_count]").val());
+    console.log(n);
+
+    last =  $('#column_0');
+    console.log(last.find("input"));
+    console.log("----");
+
+    clone = last.clone();
+    clone.appendTo(last.parent());
+
+    n++;
+    clone.attr('id', 'id_column_' + n)
+    clone.attr('name', 'column_' + n)
+
+    add_btn = clone.find("input");
+    add_btn.removeClass("add-another");
+    add_btn.addClass("remove");
+    add_btn.val("Remove Column");
+
+    $( "body" ).on( "click", ".remove", remove );
+
+    // build element and append it to our forms container
+
+    $("[name=extra_field_count]").val(String(n));
+    // increment form count so our view knows to populate
+    // that many fields for validation
+}
+
+function remove() {
+    last = $(this).parents('.column').remove();
+}
+
+$( "body" ).on( "click", ".add-another", add );
+
+</script>

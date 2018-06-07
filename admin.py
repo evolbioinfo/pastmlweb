@@ -1,4 +1,4 @@
 from django.contrib import admin
-from pastmlapp.models import Question
+from pastmlapp.models import TreeData
 
-admin.site.register(Question)
+admin.site.register(TreeData)
