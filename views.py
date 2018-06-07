@@ -65,7 +65,7 @@ def analysis(request, id):
     analysis = Analysis(tree_data=tree_data)
 
     if request.method == 'POST':
-        form = AnalysisForm(instance=analysis, data=request.POST, extra=int(request.POST.get('extra_field_count')))
+        form = AnalysisForm(instance=analysis, data=request.POST)
         if form.is_valid():
             form.save()
 

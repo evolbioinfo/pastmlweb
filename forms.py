@@ -1,9 +1,10 @@
 from django import forms
 from django.core.exceptions import NON_FIELD_ERRORS
+from multiselectfield import MultiSelectFormField
 
 from pastmlapp.models import TreeData, Analysis, Column
 from pastmlapp.tasks import send_feedback_email_task
-from django.forms import ModelForm, CharField, HiddenInput
+from django.forms import ModelForm, CharField, HiddenInput, widgets
 
 import pandas as pd
 
@@ -42,67 +43,30 @@ class TreeDataForm(ModelForm):
 
 # Create the form class.
 class AnalysisForm(ModelForm):
-    extra_field_count = CharField(widget=HiddenInput())
-
     class Meta:
         model = Analysis
         fields = ['date_column', 'model', 'prediction_method', 'email', 'title']
 
     def __init__(self, *args, **kwargs):
-        extra_fields = kwargs.pop('extra', 0)
-
         super(AnalysisForm, self).__init__(*args, **kwargs)
         td = TreeData.objects.get(pk=self.instance.tree_data.id)
-        self.column_choices = tuple((str(_), str(_))
-                                 for _ in pd.read_table(td.data.url, sep=td.data_sep,
-                                                        index_col=td.id_index, header=0).columns)
+        column_choices = tuple((str(_), str(_))
+                               for _ in pd.read_table(td.data.url, sep=td.data_sep,
+                                                      index_col=td.id_index, header=0).columns)
 
-        self.fields['date_column'] = forms.ChoiceField(required=False, choices=((None, ''),) + self.column_choices,
+        self.fields['date_column'] = forms.ChoiceField(required=False, choices=((None, ''),) + column_choices,
                                                        help_text=u'(optional) Column containing tip dates.')
 
-        columns = Column.objects.filter(
-            analysis=self.instance
-        )
-        extra_fields = max(len(columns) - 1, extra_fields)
-
-        self.fields['extra_field_count'].initial = extra_fields
-
-        for i in range(extra_fields + 1):
-            field_name = 'column_{}'.format(i)
-            self.fields[field_name] = forms.ChoiceField(required=i == 0, choices=self.column_choices,
-                                                        help_text=u'Column containing a{} state to be reconstructed with PASTML.'.format('nother' if i > 0 else ''),
-                                                        widget=forms.Select(attrs={'class': 'column-list-new'} if i == len(columns) else {}))
-            self.initial[field_name] = columns[i].column if i < len(columns) else self.column_choices[0]
-
-    def clean(self):
-        super(AnalysisForm, self).clean()
-        columns = set()
-        for i in range(int(self.cleaned_data['extra_field_count']) + 1):
-            field_name = 'column_{}'.format(i)
-            if field_name not in self.cleaned_data:
-                continue
-            print(i, "({})".format(self.cleaned_data[field_name]))
-            column = self.cleaned_data[field_name]
-            if column in columns:
-                self.add_error(field_name, 'Duplicate')
-            elif not column:
-                self.add_error(field_name, 'Empty column {}'.format(i))
-            else:
-                columns.add(column)
-
-        self.cleaned_data["columns"] = columns
+        self.fields['column'] = MultiSelectFormField(choices=column_choices, max_choices=6, min_choices=1,
+                                                     help_text=u'Column(s) whose ancestral states are to be reconstructed.',
+                                                     widget=widgets.SelectMultiple)
 
     def save(self, commit=True):
         super(AnalysisForm, self).save(commit=commit)
         analysis = self.instance
 
-        for _ in self.cleaned_data["columns"]:
+        for _ in self.cleaned_data["column"]:
             Column.objects.create(
                 analysis=analysis,
                 column=_,
             )
-
-    def get_column_fields(self):
-        for field_name in self.fields:
-            if field_name.startswith('column_'):
-                yield self[field_name]
