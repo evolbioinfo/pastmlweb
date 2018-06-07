@@ -86,7 +86,7 @@ def analysis(request, id):
             if task.failed():
                 # Insert error message and return to the input form
                 return render(request, 'pastmlapp/analysis.html', {
-                    'form': form, 'error': task.state
+                    'form': form, 'error': task.info
                 })
             analysis.html_compressed = html_compressed
             analysis.save()
