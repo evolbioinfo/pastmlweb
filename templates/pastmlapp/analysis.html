@@ -1,5 +1,5 @@
 {% load staticfiles %}
-<link rel="stylesheet" type="text/css" href="{% static 'pastmlapp/pastml.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/pastml.css' %}">
 
 {% if error %}
 {{ error }}
@@ -9,6 +9,6 @@
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Reconstruct ancestral states</button>
+    <button type="submit" class="btn btn-primary">Reconstruct ancestral states</button>
   </form>
 {% endblock %}

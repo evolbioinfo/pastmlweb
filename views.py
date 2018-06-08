@@ -1,49 +1,46 @@
-from time import sleep
-
-from django.core.files import File
-from django.db.models import FilePathField
-from django.http import HttpResponse
+from celery.result import AsyncResult
+from django.contrib.sites.models import Site
 from django.shortcuts import render, get_object_or_404, redirect
+from django.template.loader import render_to_string
+from django.urls import reverse
 
 from pastmlapp.forms import FeedbackForm, TreeDataForm, AnalysisForm
 from pastmlapp.models import TreeData, Analysis, Column
-
-from .tasks import send_feedback_email_task, apply_pastml
-
-
-def feedback(request):
-    if request.method == 'POST':
-        form = FeedbackForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data['email']
-            msg = form.cleaned_data['message']
-            # The delay is used to asynchronously process the task
-            send_feedback_email_task.delay(email, msg)
-            return redirect('pastmlapp:index')
-    else:
-        form = FeedbackForm
-    return render(request, 'pastmlapp/feedback.html', {'form': form})
+from pastmlweb.celery import app
+from .tasks import apply_pastml
 
 
-def index(request):
-    latest_question_list = Question.objects.order_by('-created_at')[:5]
-    context = {
-        'latest_question_list': latest_question_list
-    }
-    return render(request, 'pastmlapp/index.html', context)
-
-
-def detail(request, id):
+def result(request, id):
     analysis = get_object_or_404(Analysis, pk=id)
     data = 'Could not load PASTML analysis {}'.format(id)
     with open(analysis.html_compressed, 'r') as f:
         data = f.read()
-    return render(request, 'pastmlapp/detail.html', {'text': data})
+    return render(request, 'pastmlapp/result.html', {'text': data})
 
 
-def results(request, id):
-    response = "You're looking at the results of question %s."
-    return HttpResponse(response % id)
+def detail(request, id):
+    analysis = get_object_or_404(Analysis, pk=id)
+    task = AsyncResult(analysis.task_id, app=app)
+    if task.state in ('SUCCESS', 'FAILURE'):
+        if task.failed():
+            context = {'error': task.info}
+        else:
+            context = {'id': id}
+    else:
+        context = {}
+    return render(request, 'pastmlapp/layout.html', {
+        'title': 'Results',
+        'content': render_to_string('pastmlapp/detail.html', request=request, context=context)
+    })
+
+
+def index(request):
+    if request.method == 'POST':
+        return redirect('pastmlapp:pastml')
+    return render(request, 'pastmlapp/layout.html', {
+        'title': 'PASTML',
+        'content': render_to_string('pastmlapp/index.html')
+    })
 
 
 def pastml(request):
@@ -55,8 +52,12 @@ def pastml(request):
             return redirect('pastmlapp:analysis', id=tree_data.id)
     else:
         form = TreeDataForm
-    return render(request, 'pastmlapp/pastml.html', {
-        'form': form
+
+    return render(request, 'pastmlapp/layout.html', {
+        'title': 'Run PASTML',
+        'content': render_to_string('pastmlapp/pastml.html', request=request, context={
+            'form': form
+        })
     })
 
 
@@ -75,25 +76,45 @@ def analysis(request, id):
             columns = [column.column for column in Column.objects.filter(
                 analysis=analysis
             )]
-            task = apply_pastml.delay(tree_data.data.url, tree,
+            analysis.html_compressed = html_compressed
+            analysis.save()
+
+            task = apply_pastml.delay(analysis.id, tree_data.data.url, tree,
                                       tree_data.data_sep if tree_data.data_sep else '\t',
                                       tree_data.id_index,
-                                      columns, form.cleaned_data['date_column'], form.cleaned_data['model'],
+                                      columns, form.cleaned_data['date_column'] if 'date_column' in form.cleaned_data else None,
+                                      form.cleaned_data['model'],
                                       form.cleaned_data['prediction_method'], columns[0],
-                                      html_compressed, '{}.html'.format(tree))
-            while task.state not in ('SUCCESS', 'FAILURE'):
-                sleep(0.1)
-            if task.failed():
-                # Insert error message and return to the input form
-                return render(request, 'pastmlapp/analysis.html', {
-                    'form': form, 'error': task.info
-                })
-            analysis.html_compressed = html_compressed
+                                      html_compressed, '{}.html'.format(tree), form.cleaned_data['email'],
+                                      form.cleaned_data['title'], url=Site.objects.get_current(request=request).domain)
+
+            analysis.task_id = task.id
             analysis.save()
 
             return redirect('pastmlapp:detail', id=analysis.id)
     else:
         form = AnalysisForm(instance=analysis)
-    return render(request, 'pastmlapp/analysis.html', {
-        'form': form
+
+    return render(request, 'pastmlapp/layout.html', {
+        'title': 'Run PASTML',
+        'content': render_to_string('pastmlapp/analysis.html', request=request, context={
+            'form': form
+        })
+    })
+
+
+def feedback(request):
+    if request.method == 'POST':
+        form = FeedbackForm(data=request.POST)
+        if form.is_valid():
+            form.send_email()
+            return redirect('pastmlapp:index')
+    else:
+        form = FeedbackForm
+
+    return render(request, 'pastmlapp/layout.html', {
+        'title': 'Run PASTML',
+        'content': render_to_string('pastmlapp/feedback.html', request=request, context={
+            'form': form
+        })
     })

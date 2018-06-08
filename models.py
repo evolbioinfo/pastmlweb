@@ -47,6 +47,7 @@ class Analysis(models.Model):
     html_compressed = models.CharField(max_length=256, default=None, blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
+    task_id = models.CharField(max_length=32, default=None, blank=True, null=True)
 
 
 class Column(models.Model):

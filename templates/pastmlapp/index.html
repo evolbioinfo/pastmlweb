@@ -1,9 +1,17 @@
-{% if latest_question_list %}
-    <ul>
-    {% for question in latest_question_list %}
-        <li><a href="{% url 'pastmlapp:detail' question.id %}">{{ question.tree }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No questions are available.</p>
-{% endif %}
+<div>
+  <div style="float:right;">
+    <img src="/static/img/full_pipeline.png" style="width:500px;"/>
+  </div>
+    <h2>About PASTML</h2>
+    <p>PASTML infers ancestral states on a rooted phylogenetical tree with annotated tips, using maximum likelihood. </p>
+    <p>The tree with reconstructed ancestral states is then visualised as a zoomable html map.</p>
+  <p>You need two files to run PASTML: one with the rooted reference tree inferred using your preferred method;
+      the second with the tip annotations.</p>
+
+  <p>PASTML code is open source and available on <a href="https://github.com/saishikawa/PASTML">GitHub</a>.</p>
+</div>
+
+<div style="">
+  <h2>Run PASTML</h2>
+  <a class="btn btn-primary" href="{% url 'pastmlapp:pastml' %}" role="button">Run PASTML</a>
+</div>
