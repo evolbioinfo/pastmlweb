@@ -2,16 +2,16 @@
   <div style="float:right;">
     <img src="/static/img/full_pipeline.png" style="width:500px;"/>
   </div>
-    <h2>About PASTML</h2>
-    <p>PASTML infers ancestral states on a rooted phylogenetical tree with annotated tips, using maximum likelihood. </p>
-    <p>The tree with reconstructed ancestral states is then visualised as a zoomable html map.</p>
-  <p>You need two files to run PASTML: one with the rooted reference tree inferred using your preferred method;
-      the second with the tip annotations.</p>
-
+  <h2>About PASTML</h2>
+  <p>PASTML infers ancestral states on a rooted phylogenetical tree with annotated tips, using maximum likelihood.</p>
+  <p>The result is then visualised as a zoomable html map.</p>
   <p>PASTML code is open source and available on <a href="https://github.com/saishikawa/PASTML">GitHub</a>.</p>
-</div>
 
-<div style="">
-  <h2>Run PASTML</h2>
+  <h2>Try it now</h2>
+  <p>You need two files to run PASTML: </p>
+  <ul>
+    <li>a rooted tree, in <a href="https://en.wikipedia.org/wiki/Newick_format" target="_blank">Newick</a> format;</li>
+    <li>an annotation table specifying tip states, in <a href="https://en.wikipedia.org/wiki/Comma-separated_values" target="_blank">CSV</a> format.</li>
+  </ul>
   <a class="btn btn-primary" href="{% url 'pastmlapp:pastml' %}" role="button">Run PASTML</a>
 </div>

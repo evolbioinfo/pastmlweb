@@ -1,8 +1,9 @@
+import os
+
 from celery.result import AsyncResult
 from django.contrib.sites.models import Site
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
-from django.urls import reverse
 
 from pastmlapp.forms import FeedbackForm, TreeDataForm, AnalysisForm
 from pastmlapp.models import TreeData, Analysis, Column
@@ -20,12 +21,8 @@ def result(request, id):
 
 def detail(request, id):
     analysis = get_object_or_404(Analysis, pk=id)
-    task = AsyncResult(analysis.task_id, app=app)
-    if task.state in ('SUCCESS', 'FAILURE'):
-        if task.failed():
-            context = {'error': task.info}
-        else:
-            context = {'id': id}
+    if os.path.exists(analysis.html_compressed):
+        context = {'id': id}
     else:
         context = {}
     return render(request, 'pastmlapp/layout.html', {
@@ -79,17 +76,15 @@ def analysis(request, id):
             analysis.html_compressed = html_compressed
             analysis.save()
 
-            task = apply_pastml.delay(analysis.id, tree_data.data.url, tree,
-                                      tree_data.data_sep if tree_data.data_sep else '\t',
-                                      tree_data.id_index,
-                                      columns, form.cleaned_data['date_column'] if 'date_column' in form.cleaned_data else None,
-                                      form.cleaned_data['model'],
-                                      form.cleaned_data['prediction_method'], columns[0],
-                                      html_compressed, '{}.html'.format(tree), form.cleaned_data['email'],
-                                      form.cleaned_data['title'], url=Site.objects.get_current(request=request).domain)
-
-            analysis.task_id = task.id
-            analysis.save()
+            apply_pastml.delay(analysis.id, tree_data.data.url, tree,
+                               tree_data.data_sep if tree_data.data_sep and tree_data.data_sep != '<tab>' else '\t',
+                               form.cleaned_data['id_column'],
+                               columns,
+                               form.cleaned_data['date_column'] if 'date_column' in form.cleaned_data else None,
+                               form.cleaned_data['model'],
+                               form.cleaned_data['prediction_method'], columns[0],
+                               html_compressed, '{}.html'.format(tree), form.cleaned_data['email'],
+                               form.cleaned_data['title'], url=Site.objects.get_current(request=request).domain)
 
             return redirect('pastmlapp:detail', id=analysis.id)
     else:
@@ -113,7 +108,7 @@ def feedback(request):
         form = FeedbackForm
 
     return render(request, 'pastmlapp/layout.html', {
-        'title': 'Run PASTML',
+        'title': 'Contact us',
         'content': render_to_string('pastmlapp/feedback.html', request=request, context={
             'form': form
         })

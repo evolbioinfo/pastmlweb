@@ -1,7 +1,5 @@
-import celery
 from celery.task import task
 from celery.utils.log import get_task_logger
-from django.contrib.sites.models import Site
 from django.urls import reverse
 
 logger = get_task_logger(__name__)
@@ -32,11 +30,16 @@ def send_analysis_email(email, url, title):
 @task(name="apply_pastml")
 def apply_pastml(id, data, tree, data_sep, id_index, columns, date_column, model, prediction_method, name_column,
                  html_compressed, html, email, title, url):
-    from cytopast.pastml_analyser import pastml_pipeline
-    pastml_pipeline(tree=tree, data=data, data_sep=data_sep, id_index=id_index, columns=columns,
-                    date_column=date_column,
-                    model=model, prediction_method=prediction_method, name_column=name_column,
-                    html_compressed=html_compressed, html=html)
+    try:
+        from cytopast.pastml_analyser import pastml_pipeline
+        pastml_pipeline(tree=tree, data=data, data_sep=data_sep, id_index=id_index, columns=columns,
+                        date_column=date_column,
+                        model=model, prediction_method=prediction_method, name_column=name_column,
+                        html_compressed=html_compressed, html=html)
+    except Exception as e:
+        with open(html_compressed, 'w+') as f:
+            f.write('<p>Could not reconstruct the states, sorry...<br/>{}</p>'.format(str(e)))
+        raise e
     if email:
         url = 'http://{}{}'.format(url, reverse('pastmlapp:detail', args=(id,)))
         send_analysis_email.delay(email, url, title)
