@@ -1,11 +1,49 @@
 {% if error %}
-{{ error }}
+<p class="has-error">{{ error }}</p>
 {% endif %}
 
 {% block content %}
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Submit</button>
+    {% if form.non_field_errors %}
+            <div class="nf-error">
+            <ul class="errorlist">
+                {% for error in fform.non_field_errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            </div>
+        {% endif %}
+    {% for field in form %}
+        {% if field.errors %}
+      <div class="field error">
+            <ul class="errorlist">
+                {% for error in field.errors %}
+                <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+            {% else %}
+      <div class="field">
+        {% endif %}
+            <p>
+            <label class="mylabel">{{ field.label }}</label>
+            {{ field }}
+            <span class="helptext">{{ field.help_text|safe}}</span>
+        </p>
+        </div>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">Submit</button>
   </form>
+
+    <script type="text/javascript">
+        $("#nwk").change(function(){
+          $("#nwk").parent().parent().removeClass("error");
+          $("#nwk").parent().parent().find("ul").remove();
+
+        });
+        $("#csv").change(function(){
+          $("#csv").parent().parent().removeClass("error");
+          $("#csv").parent().parent().find("ul").remove();
+        });
+    </script>
 {% endblock %}

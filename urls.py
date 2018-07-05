@@ -5,12 +5,10 @@ from pastmlapp import views
 app_name = "pastmlapp"
 
 urlpatterns = [
+    url(r'^run$', views.pastml, name='pastml'),
     url(r'^$', views.index, name='index'),
-    # ex: /pastmlapp/5/
-    url(r'^(?P<id>\d+)/$', views.detail, name='detail'),
-    # ex: /pastmlapp/5/results/
-    url(r'^(?P<id>\d+)/results/$', views.results, name='results'),
-    url(r'^pastml$', views.pastml, name='pastml'),
-    url(r'^analysis/(?P<id>\d+)$', views.analysis, name='analysis'),
+    url(r'^run/(?P<id>\d+)$', views.analysis, name='analysis'),
+    url(r'^result/(?P<id>\d+)$', views.result, name='result'),
+    url(r'^view/(?P<id>[\d\w-]+)/$', views.detail, name='detail'),
     url(r'^feedback$', views.feedback, name='feedback'),
 ]
