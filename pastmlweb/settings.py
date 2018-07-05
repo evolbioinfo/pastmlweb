@@ -54,14 +54,11 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'pastmlweb.urls'
 
-TEMPLATE_DIRS = (
-    os.path.join(os.path.realpath('.'),  "templates")
-)
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR,  "templates"),],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

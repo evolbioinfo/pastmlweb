@@ -1,5 +1,5 @@
 from django.db import models
-from .validators import validate_nwk_file_extension
+from django.db.models import SET_NULL
 
 MODEL_CHOICES = (
     ('F81', 'F81 (Felsenstein 1981)'),
@@ -11,32 +11,61 @@ METHOD_CHOICES = (
     ('max_posteriori', 'max likelihood: maximum posteriori'),
     ('joint', 'max likelihood: joint'),
     ('marginal', 'max likelihood: marginal'),
-    ('downpass', 'parsimony: downpass'),
     ('acctran', 'parsimony: acctran'),
     ('deltran', 'parsimony: deltran'),
+    ('downpass', 'parsimony: downpass'),
 )
 
 
-class Question(models.Model):
-    data = models.FileField(upload_to='documents/')
-    tree = models.FileField(upload_to='documents/', validators=[validate_nwk_file_extension])
+class TreeData(models.Model):
+    tree = models.FileField(upload_to='documents/',
+                            help_text=u'A rooted tree (in <a href=https://en.wikipedia.org/wiki/Newick_format '
+                                      u'target=_blank>Newick</a> format).')
 
-    data_sep = models.CharField(max_length=8, default='\t', blank=True, null=True)
-    id_index = models.IntegerField(default=0)
-    columns = models.CharField(max_length=512, default=None, blank=True, null=True)
-    copy_columns = models.CharField(max_length=512, default=None, blank=True, null=True)
-    date_column = models.CharField(max_length=128, default=None, blank=True, null=True)
-    name_column = models.CharField(max_length=128, default=None, blank=True, null=True)
-    model = models.CharField(max_length=4, default='F81', choices=MODEL_CHOICES)
-    prediction_method = models.CharField(max_length=128, default='marginal_approx', choices=METHOD_CHOICES)
-    tip_size_threshold = models.PositiveIntegerField(default=15)
-
-    email = models.EmailField(default=None, blank=True, null=True)
-    title = models.CharField(max_length=128, default='PASTML')
+    data = models.FileField(upload_to='documents/',
+                            help_text=u'An annotation table specifying tip states '
+                                      u'(in <a href="https://en.wikipedia.org/wiki/Comma-separated_values" '
+                                      u'target="_blank">CSV</a> format).')
+    data_sep = models.CharField(max_length=8, default='<tab>', blank=True, null=True,
+                                help_text=u'Separator for the annotation table (default is "&lt;tab&gt;", '
+                                          u'for a comma-separated file put ",").')
 
     created_at = models.DateTimeField(auto_now_add=True)
-    html_compressed = models.CharField(max_length=256, default=None, blank=True, null=True)
 
     def __str__(self):
-        return "Tree {}, data {}, columns {}, model {}, method {}"\
-            .format(self.tree, self.data, self.columns, self.model, self.prediction_method)
+        return "tree {}, data {}"\
+            .format(self.tree, self.data)
+
+
+class Analysis(models.Model):
+    tree_data = models.ForeignKey('pastmlapp.TreeData', null=True, on_delete=SET_NULL)
+
+    id_column = models.IntegerField(default=0,
+                                    help_text=u'The number of the column in the annotation file '
+                                              u'containing the tip ids (by default 0, e.g. the first column).')
+
+    date_column = models.CharField(max_length=128, default=None, blank=True, null=True,
+                                   help_text=u'(optional) Column containing tip dates.')
+
+    model = models.CharField(max_length=4, default='F81', choices=MODEL_CHOICES,
+                             help_text=u'Evolutionary model for state changes.')
+    prediction_method = models.CharField(max_length=128, default='marginal_approx', choices=METHOD_CHOICES,
+                                         help_text=u'Ancestral state prediction method.')
+
+    email = models.EmailField(default=None, blank=True, null=True,
+                              help_text=u"If specified, you'll receive an email at this address "
+                                        u"once the PASTML reconstruction is ready.")
+    title = models.CharField(max_length=128, default='PASTML is ready!',
+                             help_text=u"The title to be used in the email.")
+
+    html_compressed = models.CharField(max_length=256, default=None, blank=True, null=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class Column(models.Model):
+    analysis = models.ForeignKey('pastmlapp.Analysis', null=True, on_delete=SET_NULL)
+
+    column = models.CharField(max_length=512,
+                              help_text=u'Column containing tip values for the state to be reconstructed with PASTML.')
+
