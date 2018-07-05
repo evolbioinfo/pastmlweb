@@ -37,7 +37,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'pastmlapp'
+    'pastmlapp',
+    'multiselectfield',
+    'django.contrib.sites'
 ]
 
 MIDDLEWARE = [
@@ -120,8 +122,15 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'zhutchok'
+
+STATIC_ROOT = ''
+
+STATICFILES_DIRS = (os.path.join('static'),)
+
+EMAIL_HOST = 'smtp.pasteur.fr'
+EMAIL_HOST_USER = 'azhukova'
 EMAIL_HOST_PASSWORD = 'EyrfyH9P'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
+SITE_ID = 1
