@@ -1,13 +1,11 @@
 import os
 
-from celery.result import AsyncResult
 from django.contrib.sites.models import Site
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
 
 from pastmlapp.forms import FeedbackForm, TreeDataForm, AnalysisForm
 from pastmlapp.models import TreeData, Analysis, Column
-from pastmlweb.celery import app
 from .tasks import apply_pastml
 
 
