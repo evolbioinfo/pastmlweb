@@ -29,6 +29,8 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['157.99.69.55', 'localhost', '127.0.0.1']
 
+ADMINS = (('Anna Zhukova', 'anna.zhukova@pasteur.fr'), )
+MANAGERS = (('Anna Zhukova', 'anna.zhukova@pasteur.fr'), )
 
 # Application definition
 
