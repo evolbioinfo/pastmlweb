@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.0/ref/settings/
 """
 
 import os
+import pandas as pd
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,10 +21,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ht8g1j5&1qnbb#*#z6ltv_75z&yu=31^^u4ep70-+*a6m^v1*7'
+with open('/etc/secret_key.txt') as f:
+    SECRET_KEY = f.read().strip()
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['157.99.69.55', 'localhost', '127.0.0.1']
 
@@ -123,11 +125,70 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+MEDIA_URL = ''
+MEDIA_ROOT = os.path.join(BASE_DIR, 'documents')
 
-STATIC_ROOT = ''
-
-STATICFILES_DIRS = (os.path.join('static'),)
-
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 SITE_ID = 1
+
+df = pd.read_csv('/etc/email.txt', header=None, index_col=0)
+EMAIL_HOST = df.loc['EMAIL_HOST', 1]
+EMAIL_HOST_USER = df.loc['EMAIL_HOST_USER', 1]
+EMAIL_HOST_PASSWORD = df.loc['EMAIL_HOST_PASSWORD', 1]
+EMAIL_PORT = int(df.loc['EMAIL_PORT', 1])
+EMAIL_USE_TLS = bool(df.loc['EMAIL_USE_TLS', 1])
+DEFAULT_FROM_EMAIL = df.loc['DEFAULT_FROM_EMAIL', 1]
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'filters': {
+        'special': {
+            '()': 'project.logging.SpecialFilter',
+            'foo': 'bar',
+        },
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'filters': ['special']
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'propagate': True,
+        },
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'myproject.custom': {
+            'handlers': ['console', 'mail_admins'],
+            'level': 'INFO',
+            'filters': ['special']
+        }
+    }
+}
 
