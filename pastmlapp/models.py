@@ -1,8 +1,6 @@
 from django.db import models
 from django.db.models import SET_NULL
 
-from settings import MEDIA_ROOT
-
 MODEL_CHOICES = (
     ('F81', 'F81 (Felsenstein 1981)'),
     ('JC', 'JC (Jukes-Cantor)'),
@@ -20,11 +18,11 @@ METHOD_CHOICES = (
 
 
 class TreeData(models.Model):
-    tree = models.FileField(upload_to=MEDIA_ROOT,
+    tree = models.FileField(upload_to='',
                             help_text=u'A rooted tree (in <a href=https://en.wikipedia.org/wiki/Newick_format '
                                       u'target=_blank>Newick</a> format).')
 
-    data = models.FileField(upload_to=MEDIA_ROOT,
+    data = models.FileField(upload_to='',
                             help_text=u'An annotation table specifying tip states '
                                       u'(in <a href="https://en.wikipedia.org/wiki/Comma-separated_values" '
                                       u'target="_blank">CSV</a> format).')

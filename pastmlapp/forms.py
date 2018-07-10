@@ -96,7 +96,7 @@ class AnalysisForm(ModelForm):
         super(AnalysisForm, self).__init__(*args, **kwargs)
         td = TreeData.objects.get(pk=self.instance.tree_data.id)
         self.column_choices = tuple((str(_), str(_))
-                                    for _ in pd.read_table(td.data.url, sep=td.data_sep, header=0).columns)
+                                    for _ in pd.read_table(td.data.path, sep=td.data_sep, header=0).columns)
 
         self.fields['tip_id_column'] = forms.ChoiceField(required=True, choices=self.column_choices,
                                                          help_text=u'Column containing tip ids.')
