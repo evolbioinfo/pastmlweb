@@ -128,7 +128,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 MEDIA_URL = ''
-MEDIA_ROOT = os.path.join(BASE_DIR, 'documents')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
@@ -183,5 +183,5 @@ SECURE_BROWSER_XSS_FILTER = True
 SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
-X_FRAME_OPTIONS= 'DENY'
+X_FRAME_OPTIONS = 'DENY'
 
