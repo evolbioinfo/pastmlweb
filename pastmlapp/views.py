@@ -65,7 +65,7 @@ def analysis(request, id):
         if form.is_valid():
             form.save()
 
-            tree = tree_data.tree.url
+            tree = tree_data.tree.path
             html_compressed = '{}.compressed.html'.format(tree)
 
             columns = [column.column for column in Column.objects.filter(
@@ -74,7 +74,7 @@ def analysis(request, id):
             analysis.html_compressed = html_compressed
             analysis.save()
 
-            apply_pastml.delay(analysis.id, tree_data.data.url, tree,
+            apply_pastml.delay(analysis.id, tree_data.data.path, tree,
                                tree_data.data_sep if tree_data.data_sep and tree_data.data_sep != '<tab>' else '\t',
                                form.cleaned_data['id_column'],
                                columns,
