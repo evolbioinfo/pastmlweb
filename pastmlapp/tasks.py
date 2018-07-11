@@ -29,13 +29,13 @@ def send_analysis_email(email, url, title):
 
 @task(name="apply_pastml")
 def apply_pastml(id, data, tree, data_sep, id_index, columns, date_column, model, prediction_method, name_column,
-                 html_compressed, html, email, title, url):
+                 html_compressed, email, title, url):
     try:
         from cytopast.pastml_analyser import pastml_pipeline
         pastml_pipeline(tree=tree, data=data, data_sep=data_sep, id_index=id_index, columns=columns,
                         date_column=date_column,
                         model=model, prediction_method=prediction_method, name_column=name_column,
-                        html_compressed=html_compressed, html=html)
+                        html_compressed=html_compressed, verbose=True)
     except Exception as e:
         with open(html_compressed, 'w+') as f:
             f.write('<p>Could not reconstruct the states, sorry...<br/>{}</p>'.format(str(e)))

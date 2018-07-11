@@ -81,7 +81,7 @@ def analysis(request, id):
                                form.cleaned_data['date_column'] if 'date_column' in form.cleaned_data else None,
                                form.cleaned_data['model'],
                                form.cleaned_data['prediction_method'], columns[0],
-                               html_compressed, '{}.html'.format(tree), form.cleaned_data['email'],
+                               html_compressed, form.cleaned_data['email'],
                                form.cleaned_data['title'], url=Site.objects.get_current(request=request).domain)
 
             return redirect('pastmlapp:detail', id=analysis.id)
