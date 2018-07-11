@@ -74,6 +74,8 @@ def analysis(request, id):
             analysis.html_compressed = html_compressed
             analysis.save()
 
+            work_dir = os.path.join(os.path.dirname(tree), 'pastml_{}'.format(analysis.id))
+
             apply_pastml.delay(analysis.id, tree_data.data.path, tree,
                                tree_data.data_sep if tree_data.data_sep and tree_data.data_sep != '<tab>' else '\t',
                                form.cleaned_data['id_column'],
@@ -82,7 +84,8 @@ def analysis(request, id):
                                form.cleaned_data['model'],
                                form.cleaned_data['prediction_method'], columns[0],
                                html_compressed, form.cleaned_data['email'],
-                               form.cleaned_data['title'], url=Site.objects.get_current(request=request).domain)
+                               form.cleaned_data['title'], url=Site.objects.get_current(request=request).domain,
+                               work_dir=work_dir)
 
             return redirect('pastmlapp:detail', id=analysis.id)
     else:
