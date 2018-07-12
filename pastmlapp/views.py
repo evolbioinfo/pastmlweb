@@ -86,7 +86,8 @@ def analysis(request, id):
                                data_sep=tree_data.data_sep if tree_data.data_sep and tree_data.data_sep != '<tab>' else '\t',
                                id_index=form.cleaned_data['id_column'], columns=columns,
                                date_column=form.cleaned_data['date_column'] if 'date_column' in form.cleaned_data else None,
-                               model=form.cleaned_data['model'], prediction_method=form.cleaned_data['prediction_method'],
+                               model=form.cleaned_data['model'] if 'model' in form.cleaned_data and form.cleaned_data['model'] else 'JC',
+                               prediction_method=form.cleaned_data['prediction_method'],
                                name_column=columns[0], html_compressed=html_compressed, email=form.cleaned_data['email'],
                                title=form.cleaned_data['title'], url=Site.objects.get_current(request=request).domain,
                                work_dir=work_dir)
