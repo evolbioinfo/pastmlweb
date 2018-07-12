@@ -20,7 +20,7 @@ def result(request, id):
 def detail(request, id):
     analysis = get_object_or_404(Analysis, pk=id)
     if os.path.exists(analysis.html_compressed):
-        context = {'id': id}
+        context = {'id': id, 'model': analysis.model, 'prediction_method': analysis.prediction_method}
     else:
         context = {}
     return render(request, 'pastmlapp/layout.html', {
@@ -76,15 +76,13 @@ def analysis(request, id):
 
             work_dir = os.path.join(os.path.dirname(tree), 'pastml_{}'.format(analysis.id))
 
-            apply_pastml.delay(analysis.id, tree_data.data.path, tree,
-                               tree_data.data_sep if tree_data.data_sep and tree_data.data_sep != '<tab>' else '\t',
-                               form.cleaned_data['id_column'],
-                               columns,
-                               form.cleaned_data['date_column'] if 'date_column' in form.cleaned_data else None,
-                               form.cleaned_data['model'],
-                               form.cleaned_data['prediction_method'], columns[0],
-                               html_compressed, form.cleaned_data['email'],
-                               form.cleaned_data['title'], url=Site.objects.get_current(request=request).domain,
+            apply_pastml.delay(id=analysis.id, data=tree_data.data.path, tree=tree,
+                               data_sep=tree_data.data_sep if tree_data.data_sep and tree_data.data_sep != '<tab>' else '\t',
+                               id_index=form.cleaned_data['id_column'], columns=columns,
+                               date_column=form.cleaned_data['date_column'] if 'date_column' in form.cleaned_data else None,
+                               model=form.cleaned_data['model'], prediction_method=form.cleaned_data['prediction_method'],
+                               name_column=columns[0], html_compressed=html_compressed, email=form.cleaned_data['email'],
+                               title=form.cleaned_data['title'], url=Site.objects.get_current(request=request).domain,
                                work_dir=work_dir)
 
             return redirect('pastmlapp:detail', id=analysis.id)
