@@ -6,19 +6,12 @@
    and model {{model}}
   {% endif %}</h3>
  <div id="resizable">
- <iframe src="{% url 'pastmlapp:result' id=id %}?time={{iframe_param}}"  width="100%" height="500" id="vis" allowfullscreen></iframe>
+ <iframe src="{% url 'pastmlapp:result' id=id %}"  width="100%" height="500" id="vis" allowfullscreen></iframe>
  </div>
  <div class="info"><p><a href="{% url 'pastmlapp:result' id=id %}" class="btn btn-primary" download>Download</a><span class="helptext"> this visualisation as an HTML page.</span></p></div>
 
  <script type="text/javascript">
      $('#vis').css('height', $(window).height() +'px');
-     window.onload = function() {
-         if(!window.location.hash) {
-             window.location = window.location + '#loaded';
-             document.getElementById('vis').contentWindow.location.reload();
-             window.location.reload();
-         }
-     }
  </script>
 {% else %}
  <head>

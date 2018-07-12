@@ -20,17 +20,11 @@ def result(request, id):
 def detail(request, id):
     analysis = get_object_or_404(Analysis, pk=id)
     if os.path.exists(analysis.html_compressed):
-        context = {'id': id, 'model': analysis.model, 'prediction_method': analysis.prediction_method,
-                   'iframe_param': datetime.datetime.now().timestamp()}
+        context = {'id': id, 'model': analysis.model, 'prediction_method': analysis.prediction_method}
     else:
         context = {}
     return render(request, 'pastmlapp/layout.html', {
         'title': 'Results',
-        'meta': """
-            <meta http-Equiv="Cache-Control" Content="no-cache" />
-            <meta http-Equiv="Pragma" Content="no-cache" />
-            <meta http-Equiv="Expires" Content="0" />
-        """,
         'content': render_to_string('pastmlapp/detail.html', request=request, context=context)
     })
 
@@ -40,7 +34,6 @@ def index(request):
         return redirect('pastmlapp:pastml')
     return render(request, 'pastmlapp/layout.html', {
         'title': 'PASTML',
-        'meta': '',
         'content': render_to_string('pastmlapp/index.html')
     })
 
@@ -57,7 +50,6 @@ def pastml(request):
 
     return render(request, 'pastmlapp/layout.html', {
         'title': 'Run PASTML',
-        'meta': '',
         'content': render_to_string('pastmlapp/pastml.html', request=request, context={
             'form': form
         })
@@ -101,7 +93,6 @@ def analysis(request, id):
 
     return render(request, 'pastmlapp/layout.html', {
         'title': 'Run PASTML',
-        'meta': '',
         'content': render_to_string('pastmlapp/analysis.html', request=request, context={
             'form': form
         })
@@ -119,7 +110,6 @@ def feedback(request):
 
     return render(request, 'pastmlapp/layout.html', {
         'title': 'Contact us',
-        'meta': '',
         'content': render_to_string('pastmlapp/feedback.html', request=request, context={
             'form': form
         })
