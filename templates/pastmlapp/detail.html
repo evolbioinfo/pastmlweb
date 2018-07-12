@@ -14,9 +14,7 @@
     $('#vis').css('height', $(window).height() +'px');
     $(document).ready(function() {
       console.log("reloading iframe");
-      $('#vis').load(function(){
-        document.getElementById('vis').contentDocument.location.reload(true);
-      });
+      document.getElementById('vis').contentDocument.location.reload(true);
     });
 
 </script>
