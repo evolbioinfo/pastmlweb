@@ -119,6 +119,14 @@ class AnalysisForm(ModelForm):
                                + ['prediction_method', 'model', 'email', 'title']
         self.fields = OrderedDict((k, self.fields[k]) for k in self.fields.keyOrder)
 
+
+    def clean(self):
+        cleaned_data = super().clean()
+        m = cleaned_data.get('model', 'F81')
+        if not m or m == 'F81':
+            self.cleaned_data['model'] = 'F81'
+        return cleaned_data
+
     def save(self, commit=True):
         self.cleaned_data['id_column'] = next(i for (i, (c, _)) in enumerate(self.column_choices)
                                               if c == self.cleaned_data['tip_id_column'])
