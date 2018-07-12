@@ -20,7 +20,11 @@ def result(request, id):
 def detail(request, id):
     analysis = get_object_or_404(Analysis, pk=id)
     if os.path.exists(analysis.html_compressed):
-        context = {'id': id, 'model': analysis.model, 'prediction_method': analysis.prediction_method}
+        columns = [column.column for column in Column.objects.filter(
+                analysis=analysis
+            )]
+        context = {'id': id, 'model': analysis.model, 'prediction_method': analysis.prediction_method,
+                   'columns': ', '.join(columns)}
     else:
         context = {}
     return render(request, 'pastmlapp/layout.html', {
