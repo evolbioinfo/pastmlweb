@@ -1,31 +1,31 @@
 {% if error %}
-<p class="error">{{ error }}</p>
+ <p class="error">{{ error }}</p>
 {% elif id %}
-<h2>Ancestral state reconstruction with {{prediction_method}} method
- {% if "marginal" in prediction_method or "joint" == prediction_method %}
-  and model {{model}}
- {% endif %}</h2>
-<div id="resizable">
-<iframe src="{% url 'pastmlapp:result' id=id %}?time={{iframe_param}}"  width="100%" height="500" id="vis" allowfullscreen></iframe>
-</div>
-<div class="info"><p><a href="{% url 'pastmlapp:result' id=id %}" class="btn btn-primary" download>Download</a><span class="helptext"> this visualisation as an HTML page.</span></p></div>
+ <h3>Ancestral state reconstruction with {{prediction_method}} method
+  {% if "marginal" in prediction_method or "joint" == prediction_method %}
+   and model {{model}}
+  {% endif %}</h3>
+ <div id="resizable">
+ <iframe src="{% url 'pastmlapp:result' id=id %}?time={{iframe_param}}"  width="100%" height="500" id="vis" allowfullscreen></iframe>
+ </div>
+ <div class="info"><p><a href="{% url 'pastmlapp:result' id=id %}" class="btn btn-primary" download>Download</a><span class="helptext"> this visualisation as an HTML page.</span></p></div>
 
-<script type="text/javascript">
-    $('#vis').css('height', $(window).height() +'px');
-    window.onload = function() {
-        if(!window.location.hash) {
-            window.location = window.location + '#loaded';
-            document.getElementById('vis').contentWindow.location.reload();
-            window.location.reload();
-        }
-    }
-</script>
+ <script type="text/javascript">
+     $('#vis').css('height', $(window).height() +'px');
+     window.onload = function() {
+         if(!window.location.hash) {
+             window.location = window.location + '#loaded';
+             document.getElementById('vis').contentWindow.location.reload();
+             window.location.reload();
+         }
+     }
+ </script>
 {% else %}
-<head>
- <meta http-equiv="refresh" content="12">
-</head>
-{% load staticfiles %}
-<p> We are reconstructing and visualising the ancestral states... </p>
-<p> Once it is done, the result will appear on this page. </p>
-<image src="{% static 'img/steps_small.gif' %}" alt="PASTML steps gif"></image>
+ <head>
+  <meta http-equiv="refresh" content="12">
+ </head>
+ {% load staticfiles %}
+ <p> We are reconstructing and visualising the ancestral states... </p>
+ <p> Once it is done, the result will appear on this page. </p>
+ <image src="{% static 'img/steps_small.gif' %}" alt="PASTML steps gif"></image>
 {% endif %}
