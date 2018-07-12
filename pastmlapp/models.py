@@ -52,7 +52,7 @@ class Analysis(models.Model):
     date_column = models.CharField(max_length=128, default=None, blank=True, null=True,
                                    help_text=u'(optional) Column containing tip dates.')
 
-    model = models.CharField(max_length=4, default='F81', choices=MODEL_CHOICES,
+    model = models.CharField(max_length=4, default='F81', choices=MODEL_CHOICES, blank=True,
                              help_text=u'Evolutionary model for state changes (for max likelihood methods only).')
     prediction_method = models.CharField(max_length=128, default='marginal_approx', choices=METHOD_CHOICES,
                                          help_text=u'Ancestral state prediction method.')
