@@ -119,11 +119,6 @@ class AnalysisForm(ModelForm):
                                + ['model', 'prediction_method', 'email', 'title']
         self.fields = OrderedDict((k, self.fields[k]) for k in self.fields.keyOrder)
 
-        if data and data.get('prediction_method', None) in ['marginal_approx', 'max_posteriori', 'joint', 'marginal']:
-            self.fields['model'].widget.attrs['disabled'] = 'false'
-        else:
-            self.fields['model'].widget.attrs['disabled'] = 'true'
-
     def save(self, commit=True):
         self.cleaned_data['id_column'] = next(i for (i, (c, _)) in enumerate(self.column_choices)
                                               if c == self.cleaned_data['tip_id_column'])
