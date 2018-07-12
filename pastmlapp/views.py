@@ -39,6 +39,7 @@ def index(request):
         return redirect('pastmlapp:pastml')
     return render(request, 'pastmlapp/layout.html', {
         'title': 'PASTML',
+        'meta': '',
         'content': render_to_string('pastmlapp/index.html')
     })
 
@@ -55,6 +56,7 @@ def pastml(request):
 
     return render(request, 'pastmlapp/layout.html', {
         'title': 'Run PASTML',
+        'meta': '',
         'content': render_to_string('pastmlapp/pastml.html', request=request, context={
             'form': form
         })
@@ -96,6 +98,7 @@ def analysis(request, id):
 
     return render(request, 'pastmlapp/layout.html', {
         'title': 'Run PASTML',
+        'meta': '',
         'content': render_to_string('pastmlapp/analysis.html', request=request, context={
             'form': form
         })
@@ -113,6 +116,7 @@ def feedback(request):
 
     return render(request, 'pastmlapp/layout.html', {
         'title': 'Contact us',
+        'meta': '',
         'content': render_to_string('pastmlapp/feedback.html', request=request, context={
             'form': form
         })
