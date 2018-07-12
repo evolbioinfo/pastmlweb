@@ -12,8 +12,13 @@
 
 <script type="text/javascript">
     $('#vis').css('height', $(window).height() +'px');
-    console.log("reloading iframe");
-    $('#vis').attr('src', $('#vis').attr('src'));
+    $(document).ready(function() {
+      console.log("reloading iframe");
+      $('#vis').load(function(){
+        document.getElementById('vis').contentDocument.location.reload(true);
+      });
+    });
+
 </script>
 {% else %}
 <head>
