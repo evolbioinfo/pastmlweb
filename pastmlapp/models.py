@@ -19,7 +19,7 @@ METHOD_CHOICES = (
 
 
 class TreeData(models.Model):
-    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     tree = models.FileField(upload_to='',
                             help_text=u'A rooted tree (in <a href=https://en.wikipedia.org/wiki/Newick_format '
@@ -41,7 +41,7 @@ class TreeData(models.Model):
 
 
 class Analysis(models.Model):
-    uuid = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     tree_data = models.ForeignKey('pastmlapp.TreeData', null=True, on_delete=SET_NULL)
 
