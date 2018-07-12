@@ -36,14 +36,23 @@
   </form>
 
 <script>
-    document.getElementById('id_prediction_method').onchange = function () {
-    if (this.value != "marginal_approx" && this.value !="max_posteriori" && this.value != "joint") {
+    var pm = document.getElementById('id_prediction_method');
+    if (pm.value != "marginal_approx" && pm.value !="max_posteriori" && pm.value != "joint") {
         document.getElementById("id_model").disabled = true;
         document.getElementById("id_model").parentNode.style.opacity = "0.5";
     } else {
         document.getElementById("id_model").disabled = false;
         document.getElementById("id_model").parentNode.style.opacity = "1";
     }
-}
+
+    pm.onchange = function () {
+        if (this.value != "marginal_approx" && this.value !="max_posteriori" && this.value != "joint") {
+            document.getElementById("id_model").disabled = true;
+            document.getElementById("id_model").parentNode.style.opacity = "0.5";
+        } else {
+            document.getElementById("id_model").disabled = false;
+            document.getElementById("id_model").parentNode.style.opacity = "1";
+        }
+    }
 </script>
 {% endblock %}

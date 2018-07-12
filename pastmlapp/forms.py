@@ -90,7 +90,7 @@ class AnalysisForm(ModelForm):
 
     class Meta:
         model = Analysis
-        fields = ['model', 'prediction_method', 'email', 'title']
+        fields = ['prediction_method', 'model', 'email', 'title']
 
     def __init__(self, data=None, *args, **kwargs):
         super(AnalysisForm, self).__init__(data, *args, **kwargs)
@@ -116,7 +116,7 @@ class AnalysisForm(ModelForm):
             self.fields['date_column'] = forms.ChoiceField(required=False, choices=((None, ''),) + self.column_choices,
                                                            help_text=u'(optional) Column containing tip dates.')
         self.fields.keyOrder = ['tip_id_column'] + (['column(s)', 'date_column'] if multi_column else ['column']) \
-                               + ['model', 'prediction_method', 'email', 'title']
+                               + ['prediction_method', 'model', 'email', 'title']
         self.fields = OrderedDict((k, self.fields[k]) for k in self.fields.keyOrder)
 
     def save(self, commit=True):
