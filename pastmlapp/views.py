@@ -19,19 +19,17 @@ def result(request, id):
 
 def detail(request, id):
     analysis = get_object_or_404(Analysis, pk=id)
-    meta = ''
     if os.path.exists(analysis.html_compressed):
         context = {'id': id, 'model': analysis.model, 'prediction_method': analysis.prediction_method}
-        meta = """
-            <meta http-Equiv="Cache-Control" Content="no-cache" />
-            <meta http-Equiv="Pragma" Content="no-cache" />
-            <meta http-Equiv="Expires" Content="0" />
-        """
     else:
         context = {}
     return render(request, 'pastmlapp/layout.html', {
         'title': 'Results',
-        'meta': meta,
+        'meta': """
+            <meta http-Equiv="Cache-Control" Content="no-cache" />
+            <meta http-Equiv="Pragma" Content="no-cache" />
+            <meta http-Equiv="Expires" Content="0" />
+        """,
         'content': render_to_string('pastmlapp/detail.html', request=request, context=context)
     })
 
