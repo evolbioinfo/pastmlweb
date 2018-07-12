@@ -12,11 +12,10 @@
 
 <script type="text/javascript">
     $('#vis').css('height', $(window).height() +'px');
-    document.onload = function() {
-     this.contentWindow.location.reload(true);
-     this.contentDocument.location.reload(true);
-     this.onload = null;
-    };
+    window.onload = function () {
+     window.location.reload();
+     window.onload=null;
+    }
 </script>
 {% else %}
 <head>
