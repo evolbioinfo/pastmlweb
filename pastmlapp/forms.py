@@ -92,8 +92,8 @@ class AnalysisForm(ModelForm):
         model = Analysis
         fields = ['model', 'prediction_method', 'email', 'title']
 
-    def __init__(self, *args, **kwargs):
-        super(AnalysisForm, self).__init__(*args, **kwargs)
+    def __init__(self, data=None, *args, **kwargs):
+        super(AnalysisForm, self).__init__(data, *args, **kwargs)
         td = TreeData.objects.get(pk=self.instance.tree_data.id)
         self.column_choices = tuple((str(_), str(_))
                                     for _ in pd.read_table(td.data.path, sep=td.data_sep, header=0).columns)
@@ -118,6 +118,11 @@ class AnalysisForm(ModelForm):
         self.fields.keyOrder = ['tip_id_column'] + (['column(s)', 'date_column'] if multi_column else ['column']) \
                                + ['model', 'prediction_method', 'email', 'title']
         self.fields = OrderedDict((k, self.fields[k]) for k in self.fields.keyOrder)
+
+        if data and data.get('prediction_method', None) in ['marginal_approx', 'max_posteriori', 'joint', 'marginal']:
+            self.fields['model'].widget.attrs['disabled'] = 'false'
+        else:
+            self.fields['model'].widget.attrs['disabled'] = 'true'
 
     def save(self, commit=True):
         self.cleaned_data['id_column'] = next(i for (i, (c, _)) in enumerate(self.column_choices)

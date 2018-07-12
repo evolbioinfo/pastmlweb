@@ -11,7 +11,7 @@ METHOD_CHOICES = (
     ('marginal_approx', 'max likelihood: marginal approximation'),
     ('max_posteriori', 'max likelihood: maximum posteriori'),
     ('joint', 'max likelihood: joint'),
-    ('marginal', 'max likelihood: marginal'),
+    # ('marginal', 'max likelihood: marginal'),
     ('acctran', 'parsimony: acctran'),
     ('deltran', 'parsimony: deltran'),
     ('downpass', 'parsimony: downpass'),
@@ -53,7 +53,7 @@ class Analysis(models.Model):
                                    help_text=u'(optional) Column containing tip dates.')
 
     model = models.CharField(max_length=4, default='F81', choices=MODEL_CHOICES,
-                             help_text=u'Evolutionary model for state changes.')
+                             help_text=u'Evolutionary model for state changes (for max likelihood methods only).')
     prediction_method = models.CharField(max_length=128, default='marginal_approx', choices=METHOD_CHOICES,
                                          help_text=u'Ancestral state prediction method.')
 
