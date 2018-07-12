@@ -73,7 +73,10 @@ def analysis(request, id):
         if form.is_valid():
             form.save()
 
-            html_compressed = '{}.compressed.html'.format(analysis.id)
+            tree = tree_data.tree.path
+            wd = os.path.dirname(tree)
+
+            html_compressed = os.path.join(wd, '{}.compressed.html'.format(analysis.id))
 
             columns = [column.column for column in Column.objects.filter(
                 analysis=analysis
@@ -81,8 +84,7 @@ def analysis(request, id):
             analysis.html_compressed = html_compressed
             analysis.save()
 
-            tree = tree_data.tree.path
-            work_dir = os.path.join(os.path.dirname(tree), 'pastml_{}'.format(analysis.id))
+            work_dir = os.path.join(wd, 'pastml_{}'.format(analysis.id))
 
             apply_pastml.delay(id=analysis.id, data=tree_data.data.path, tree=tree,
                                data_sep=tree_data.data_sep if tree_data.data_sep and tree_data.data_sep != '<tab>' else '\t',
