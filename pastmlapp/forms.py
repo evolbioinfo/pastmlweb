@@ -120,11 +120,10 @@ class AnalysisForm(ModelForm):
         self.fields = OrderedDict((k, self.fields[k]) for k in self.fields.keyOrder)
 
     def clean_prediction_method(self):
-        cleaned_data = super().clean()
-        m = cleaned_data.get('prediction_method', None)
+        m = self.cleaned_data['prediction_method']
         if not ('marginal' in m or 'joint' == m):
             self.fields['model'].required = False
-        return cleaned_data
+        return m
 
     def save(self, commit=True):
         self.cleaned_data['id_column'] = next(i for (i, (c, _)) in enumerate(self.column_choices)
