@@ -1,5 +1,4 @@
 import os
-import datetime
 
 from django.contrib.sites.models import Site
 from django.shortcuts import render, get_object_or_404, redirect
@@ -21,8 +20,7 @@ def result(request, id):
 def detail(request, id):
     analysis = get_object_or_404(Analysis, pk=id)
     if os.path.exists(analysis.html_compressed):
-        context = {'id': id, 'model': analysis.model, 'prediction_method': analysis.prediction_method,
-                   'iframe_name': "n_{}".format(datetime.datetime.now().timestamp())}
+        context = {'id': id, 'model': analysis.model, 'prediction_method': analysis.prediction_method}
     else:
         context = {}
     return render(request, 'pastmlapp/layout.html', {
