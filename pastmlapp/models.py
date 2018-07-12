@@ -60,7 +60,7 @@ class Analysis(models.Model):
     email = models.EmailField(default=None, blank=True, null=True,
                               help_text=u"If specified, you'll receive an email at this address "
                                         u"once the PASTML reconstruction is ready.")
-    title = models.CharField(max_length=128, default='PASTML is ready!',
+    title = models.CharField(max_length=128, default='PASTML is ready!', blank=True, null=True,
                              help_text=u"The title to be used in the email.")
 
     html_compressed = models.CharField(max_length=256, default=None, blank=True, null=True)
