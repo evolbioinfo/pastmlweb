@@ -1,9 +1,6 @@
 {% if error %}
 <p class="error">{{ error }}</p>
 {% elif id %}
-<head>
- <meta http-equiv="Cache-Control" content="no-store" />
-</head>
 <h2>Ancestral state reconstruction with {{prediction_method}} method
  {% if "marginal" in prediction_method or "joint" == prediction_method %}
   and model {{model}}
@@ -15,6 +12,8 @@
 
 <script type="text/javascript">
     $('#vis').css('height', $(window).height() +'px');
+    var _theframe = document.getElementById("vis");
+    _theframe.contentWindow.location.href = _theframe.src;
 </script>
 {% else %}
 <head>
