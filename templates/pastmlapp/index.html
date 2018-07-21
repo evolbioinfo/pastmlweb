@@ -13,13 +13,17 @@
     <li>a rooted tree, in <a href="https://en.wikipedia.org/wiki/Newick_format" target="_blank">Newick</a> format;</li>
     <li>an annotation table specifying tip states, in <a href="https://en.wikipedia.org/wiki/Comma-separated_values" target="_blank">CSV</a> format.</li>
   </ul>
-  <h2>Example data (HIV-1A in Albania)</h2>
-  <p>If you prefer, try PastML on our example. This data set comes from the study by
+  <a class="btn btn-primary" href="{% url 'pastmlapp:pastml' %}" role="button">Run PastML</a>
+
+  <h2>Example data</h2>
+  <p>If you prefer, try PastML on our example.<p>
+  <h4>HIV-1A in Albania</h4>
+  This data set comes from the study by
     <a href="https://doi.org/10.1093/bioinformatics/btt010" target="_blank">Chevenet&nbsp;<i>et&nbsp;al.</i>,&nbsp;2013</a>,
     which adopted the data from <a href="https://doi.org/10.1371/journal.pone.0001390" target="_blank">Salemi&nbsp;<i>et&nbsp;al.</i>,&nbsp;2008</a> and includes:</p>
   <ul>
     <li>a rooted HIV-1A tree with 152 tips,</li>
     <li>a comma-separated annotation file describing the Country of sampling for each tree tip.</li>
   </ul>
-  <a class="btn btn-primary" href="{% url 'pastmlapp:pastml' %}" role="button">Run PastML</a>   <a class="btn btn-primary" type="submit" onclick="window.open('/static/Albania.zip')" role="button">Download example data</a>
+  <a class="btn btn-primary" type="submit" onclick="window.open('/static/Albania.zip')" role="button">Download data</a>
 </div>
