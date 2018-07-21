@@ -5294,6 +5294,7 @@ button.close{
 .btn{
     border-radius:0;
     padding:12px 30px;
+    margin-right: 30px;
     font-size:1.2rem
 }
 .btn:active,.btn:focus,.btn:hover{
@@ -5534,11 +5535,12 @@ blockquote{
 .nav-container .logo{
     float:left;
     padding:16px 0 0
+    margin-right: 30px;
 }
 .nav-container .logo img{
     display:inline-block;
     width:100%;
-    max-width:240px
+    max-width:240px;
 }
 .nav-container .NavBox{
     float:right
