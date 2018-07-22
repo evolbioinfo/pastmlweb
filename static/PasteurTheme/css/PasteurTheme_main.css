@@ -1384,6 +1384,15 @@ pre code{
     padding-left:15px;
     padding-right:15px
 }
+.col-logo {
+    position:static;
+    min-height:1px;
+    padding-left:15px;
+    padding-right:15px;
+    width:33.3333333333%;
+    float: left;
+    pointer-events: all;
+}
 .col-xs-1{
     width:8.3333333333%
 }
