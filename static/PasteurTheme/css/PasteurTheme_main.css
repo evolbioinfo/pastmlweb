@@ -1398,6 +1398,7 @@ pre code{
 }
 .mh-50 {
     height: 50px;
+    width: auto;
 }
 .col-xs-3{
     width:25%
