@@ -170,6 +170,10 @@
    <script type="text/javascript" src="/static/js/jquery.jqTOC.js"></script>
    <script type="text/javascript">
       $(document).ready(function(){
-         $('#content').jqTOC();
+         $('#content').jqTOC({
+              tocTitle: "Table of Contents",
+              tocStart: 2,
+              tocEnd: 5,
+        );
       });
    </script>
