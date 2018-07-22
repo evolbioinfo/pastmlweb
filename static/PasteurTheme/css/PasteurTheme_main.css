@@ -3019,6 +3019,7 @@ tbody.collapse.in{
     clip:rect(0,0,0,0);
     pointer-events:none
 }
+
 .input-group,.input-group-btn,.input-group-btn>.btn{
     position:relative
 }
