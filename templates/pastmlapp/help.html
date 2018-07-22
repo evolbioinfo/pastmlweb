@@ -1,0 +1,112 @@
+<div>
+    <div style="float:right;">
+        <img src="/static/img/full_pipeline.png" style="width:500px;"/>
+    </div>
+    <h2>About PastML</h2>
+    <p>PastML infers ancestral characters on a rooted phylogenetic tree with annotated tips, using maximum likelihood or
+        parsimony. The result is then visualised as a zoomable html map.</p>
+
+    <h2>Input data</h2>
+    <p>Once you decide to <a href="https://pastml.pasteur.fr/run">run</a> a PastML analysis, you will be asked for two files: </p>
+    <ul>
+        <li>a rooted tree;</li>
+        <li>an annotation table specifying tip states.</li>
+    </ul>
+    <h3>Tree</h3>
+    <p>The input tree should be in <a href="https://en.wikipedia.org/wiki/Newick_format" target="_blank">Newick</a> format.
+        It can be inferred with your favourite tool, e.g. <a href="http://www.atgc-montpellier.fr/phyml/" target="_blank">PhyML</a>,
+        <a href="https://sco.h-its.org/exelixis/web/software/raxml/index.html" target="_blank">RAxML</a>,
+        <a href="http://www.microbesonline.org/fasttree/" target="_blank">FastTree</a>,
+        <a href="http://www.iqtree.org/" target="_blank">IQTree</a>, or
+        <a href="http://www.beast2.org/" target="_blank">Beast2</a>. After inference one should root the tree
+        (with an outgroup or with dates, e.g. using <a href="https://github.com/fredericlemoine/gotree" target="_blank">gotree</a>
+        or <a href="https://github.com/tothuhien/lsd-0.3beta" target="_blank">LSD</a>, etc.) The tree can (but does not have to) be dated.</p>
+
+    <h3>Annotation table</h3>
+    <p>The annotation table should be in <a href="https://en.wikipedia.org/wiki/Comma-separated_values" target="_blank">CSV</a> format (with your favourite separator character).
+       Its first line should contain a <b>header</b>, specifying column names. One of the columns should contain the <b>tip ids</b> (in the same format as used in the tree),
+        and there should be at least one (or more) column(s) containing <b>tip states</b> for a character whose ancestral states are to be reconstructed with PastML.
+    </p>
+    <p>If the annotation table contains tip sampling dates, this information can be used to produce a timeline as explained after. However, this is optional.</p>
+    <p>The table can contain other columns that will not be used in PastML analysis.</p>
+    <p>You will be asked to specify which of your table columns contains what once you upload the tree and the table.</p>
+
+    <h2>Ancestral character reconstruction (ACR)</h2>
+    <img src="/static/img/acr.png" class="center"/>
+    <p>PastML can reconstruct ancestral states using two types of methods:
+        <a href="https://en.wikipedia.org/wiki/Maximum_likelihood_estimation" target="_blank">maximum likelihood</a>
+        or <a href="https://en.wikipedia.org/wiki/Maximum_parsimony_(phylogenetics)" target="_blank">maximum parsimony</a></p>.
+    <h3>Maximum Parsimony (MP) methods</h3>
+    <p>MP methods aim to minimize the number of state changes in the tree.
+        They are very quick but not very accurate, e.g. they do not take into account branch length.
+        We provide three MP methods: DOWNPASS, ACCTRAN, and DELTRAN.</p>
+    <h4>DOWNPASS <a href="http://ib.berkeley.edu/courses/ib200/readings/MacClade%204%20Manual.pdf" target="_blank">[Maddison and Maddison, 2003]</a></h4>
+    <p>DOWNPASS performs two tree traversals: the first, bottom-up, one assigns to each parent node the most parsimonious state(s) based on the states of its child nodes;
+    the second, top down, traversal combines for each node the state information from its children and parent (i.e. the information derived from all tree tips).
+    At the end of the DOWNPASS stage the states of ancestral nodes are the most parsimonious, based on the information from the whole tree.
+        However some of the internal nodes might be not completely resolved due to multiple parsimonious solutions.</p>
+    <h4>ACCTRAN <a href="https://doi.org/10.2307/2412028" target="_blank">[Farris, 1970]</a> </h4>
+    <p>ACCTRAN (accelerated transformation) reduces the number of internal node state ambiguities
+        by forcing the state changes to be performed as close to the root as possible, and therefore prioritises the reverse mutations.</p>
+    <h4>DELTRAN <a href="https://doi.org/10.1016/0025-5564(87)90074-5" target="_blank">[Swofford and Maddison, 1987]</a></h4>
+    <p>DELTRAN (delayed transformation) reduces the number of internal node state ambiguities
+        by making the changes as close as possible to the leaves, hence prioritizing parallel mutations.</p>
+    <h3>Maximum Likelihood (ML) methods</h3>
+    ML approaches are based on probabilistic models of character evolution along tree branches. From a theoretical standpoint, ML methods have some optimality guaranty
+    [<a href="https://www.ncbi.nlm.nih.gov/pubmed/9071022" target="_blank">Zhang and Nei, 1997</a>,
+    <a href="https://doi.org/10.1093/sysbio/syu010" target="_blank">Gascuel and Steel, 2014</a>], at least in the absence of model violation.
+    ML methods compute the marginal posterior probabilities of every state for each of the tree nodes, based on all tree tips (obtained via two tree traversals: bottom-up, and then top-down).
+    Then, the state selection is performed. We provide three methods: maximum a posteriori (MAP), joint, and marginal posterior probabilities approximation (MPPA).
+    <h4>Maximum a posteriori (MAP)</h4>
+    <p>MAP chooses a state with the highest posterior probability for each node, independently from one node to another. This could induce globally inconsistent scenarios (typically: two very close nodes with incompatible predictions).</p>
+    <h4>Joint <a href="https://doi.org/10.1093/oxfordjournals.molbev.a026369" target="_blank">[Pupko <i>et al.</i>, 2000]</a></h4>
+    <p>The joint methods chooses a root state with the highest posterior probability, and then computes the rest of the states in a consistent way, going top-down.</p>
+    <h4>Marginal posterior probabilities approximation (MPPA), <i>recommended</i></h4>
+    <p>MAP and Joint methods choose one state per node and do not reflect the fact that with real data and large trees, billions of scenarios may have similar posterior probabilities.
+        MPPA calculates for every node a subset of likely states that minimizes the prediction error measured by the Brier score.
+        It therefore sometimes keeps multiple state predictions per node but only when they have similar and high probabilities.</p>
+
+    <h4>Character evolution models</h4>
+    <p>We provide three models of character evolution that differ in the way the equilibrium frequencies of states are calculated: JC, F81, and estimate-from-tips.</p>
+    <h5>JC <a href="http://dx.doi.org/10.1016/B978-1-4832-3211-9.50009-7" target="_blank">[Jukes and Cantor, 1969]</a></h5>
+    <p>With JC model all frequencies, and therefore rates of changes from state i to state j (i ≠ j) are equal.</p>
+    <h5>F81 <a href="https://doi.org/10.1007/BF01734359" target="_blank">[Felsenstein, 1981]</a>, <i>recommended</i></h5>
+    <p>With F81 model, the rate of changes from i to j (i ≠ j) is proportional to the equilibrium frequency of j. The equilibrium frequencies are optimised.
+    <h5>EFT (estimate-from-tips), <i>not recommended</i></h5>
+    <p>With EFT model, the equilibrium frequencies are calculated based on the tip state proportions, the rate of changes from i to j (i ≠ j) is proportional to the equilibrium frequency of j.</p>
+
+    <h2>Visualisation</h2>
+    <img src="/static/img/visualisation.png" class="center"/>
+    <p>Once the ACR is performed, we  visualise a compressed representation of the ancestral scenarios, which highlights the main facts and hides minor details.
+    This representation is calculated in two steps: (i) <i>vertical merge</i> that clusters together the parts of the tree where no state change happens,
+        and (ii) <i>horizontal merge</i> that clusters independent events of the same kind.</p>
+    <h3>Vertical merge</h3>
+    <p>While there exists a parent-child couple such that the parent’s set of predicted states is the same as the child’s one, we merge them.
+    Moreover, we compute the size of so-obtained clusters (i.e. nodes in the compressed tree) by the number of tips of the initial tree contained in it,
+    as the tips correspond to the input data units used for tree and ancestral scenario reconstructions.
+        Accordingly, in the initial tree each tip has a size of 1, each internal node has a size of 0, and when merging two nodes we sum their sizes.</p>
+    <h3>Horizontal merge</h3>
+    <p>Starting at the root and going top-down towards the tips, at each node we compare its child subtrees.
+    If two or more identical subtrees are found, we keep just one representative and assign their number to the size of the branch
+    that connects the kept subtree to the current node. Hence a branch size corresponds to the number of times its subtree is found in the initial tree.
+    Before the horizontal merge all branches have size 1.
+    Two trees are considered identical if they have the same topology and their corresponding nodes have the same state(s) and sizes.
+    For example, two trees are identical if they are both cherries (a parent node with two tip children) with a parent in state A of size 3,
+    a child in state B of size 2, and the other child in state C of size 1.
+        However, those trees will not be identical to any non-cherry tree, or to a cherry with a parent not in state A, or to a cherry with the B-child of size 6, etc.</p>
+    <h3>Relaxed merge</h3>
+    <p>For large trees with many state changes even after the compression the visualization might contain too many details.
+        To address this issue, we relax the definition of identical trees for the horizontal merge:
+        instead of requiring identical sizes of the corresponding nodes, we allow for nodes of sizes of the same order (log10);
+        for instance, now a node in state A of size 3 can correspond to a node in state A of any size between 1 and 9,
+        and a node in state B of size 25 can correspond to a node in state B of any size between 10 and 99.
+    </p>
+        <h3>Trimming minor details</h3>
+        <p>If even after a relaxed horizontal merge the compressed representation contains too many details,
+            we remove minor details using the following procedure.
+            For each leaf node we calculate its importance by multiplying its size by the size of its branch;
+            for instance, a leaf of size 2 with a branch of size 3 gets an importance of 6.
+            We then set the cut-off threshold to the 15-th largest node importance,
+            and iteratively remove all leafs with smaller importance.
+            Finally, we rerun horizontal merge as some of the previously different topologies might become identical after trimming.</p>
+</div>

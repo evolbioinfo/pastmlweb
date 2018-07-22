@@ -11,7 +11,7 @@ from .tasks import apply_pastml
 
 def result(request, id):
     analysis = get_object_or_404(Analysis, pk=id)
-    data = 'Could not load PASTML analysis {}'.format(id)
+    data = 'Could not load ancestral character reconstruction {}'.format(id)
     with open(analysis.html_compressed, 'r') as f:
         data = f.read()
     return render(request, 'pastmlapp/result.html', {'text': data})
@@ -37,7 +37,7 @@ def index(request):
     if request.method == 'POST':
         return redirect('pastmlapp:pastml')
     return render(request, 'pastmlapp/layout.html', {
-        'title': 'PASTML',
+        'title': 'PastML',
         'content': render_to_string('pastmlapp/index.html')
     })
 
@@ -53,7 +53,7 @@ def pastml(request):
         form = TreeDataForm
 
     return render(request, 'pastmlapp/layout.html', {
-        'title': 'Run PASTML',
+        'title': 'Run PastML',
         'content': render_to_string('pastmlapp/pastml.html', request=request, context={
             'form': form
         })
@@ -97,7 +97,7 @@ def analysis(request, id):
         form = AnalysisForm(instance=analysis)
 
     return render(request, 'pastmlapp/layout.html', {
-        'title': 'Run PASTML',
+        'title': 'Run PastML',
         'content': render_to_string('pastmlapp/analysis.html', request=request, context={
             'form': form
         })
@@ -119,3 +119,11 @@ def feedback(request):
             'form': form
         })
     })
+
+
+def helppage(request):
+    return render(request, 'pastmlapp/layout.html', {
+        'title': 'PastML',
+        'content': render_to_string('pastmlapp/help.html')
+    })
+
