@@ -48,41 +48,40 @@
     <div class="nav-container">
         <div class="container">
             <div class="elementItem">
-                <div class="row">
+                <div class="col-md-8 col-sm-8">
                     <ul class="list-inline">
                         <li class="img-container"><a target="_blank" href="https://c3bi.pasteur.fr">
                             <img class="mh-50" alt="C3BI - Institut Pasteur"
                                  src="/static/PasteurTheme/images/LogoIP-CNRS-C3BI.png"/></a></li>
-                        <li class="img-container"><a target="_blank" href="https://research.pasteur.fr/en/program_project/inception">
+                        <li class="img-container"><a target="_blank"
+                                                     href="https://research.pasteur.fr/en/program_project/inception">
                             <img class="mh-50" alt="Inception"
-                                                    src="/static/PasteurTheme/images/inception.png"/></a></li>
+                                 src="/static/PasteurTheme/images/inception.png"/></a></li>
                         <li class="img-container"><a target="_blank" href="http://virogenesis.eu">
                             <img class="mh-50" alt="Virogenesis"
-                                                    src="/static/PasteurTheme/images/virogenesis.png"/></a></li>
-                        <li>
-                            <nav class="navbar navbar-default">
-                                <div class="container-fluid">
-                                    <div class="navbar-header">
-                                        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-                                                data-target="#navigation" aria-expanded="false"><span
-                                                class="pull-right">Menu</span>
-                                            <span class="icon-bar"></span> <span class="icon-bar"></span> <span
-                                                    class="icon-bar"></span>
-                                        </button>
-                                    </div>
-                                    <div style="" aria-expanded="true" class="navbar-collapse collapse in"
-                                         id="navigation">
-                                        <ul class="nav navbar-nav pull-right">
-                                            <li><a href="{% url 'pastmlapp:index' %}">Home</a></li>
-                                            <li><a href="{% url 'pastmlapp:pastml' %}">Run</a></li>
-                                            <li><a href="{% url 'pastmlapp:feedback' %}">Contact us</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </nav>
-                        </li>
+                                 src="/static/PasteurTheme/images/virogenesis.png"/></a></li>
                     </ul>
                 </div>
+                <nav class="navbar navbar-default">
+                    <div class="container-fluid">
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+                                    data-target="#navigation" aria-expanded="false"><span
+                                    class="pull-right">Menu</span>
+                                <span class="icon-bar"></span> <span class="icon-bar"></span> <span
+                                        class="icon-bar"></span>
+                            </button>
+                        </div>
+                        <div style="" aria-expanded="true" class="navbar-collapse collapse in"
+                             id="navigation">
+                            <ul class="nav navbar-nav pull-right">
+                                <li><a href="{% url 'pastmlapp:index' %}">Home</a></li>
+                                <li><a href="{% url 'pastmlapp:pastml' %}">Run</a></li>
+                                <li><a href="{% url 'pastmlapp:feedback' %}">Contact us</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </nav>
             </div>
         </div>
     </div>
@@ -188,6 +187,7 @@
         $(function() {$("#resizable").resizable({
            handles: 'all'
         });});
+
 
 
 </script>
