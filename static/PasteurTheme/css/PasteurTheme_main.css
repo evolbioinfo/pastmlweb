@@ -1404,7 +1404,8 @@ img.mh-50 {
 li.img-container {
     height: 50px;
     min-wight: 1px;
-    max-width: 234px;
+    max-width: 250px;
+    margin-right: 16px;
 }
 
 .col-xs-3{
