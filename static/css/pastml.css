@@ -82,9 +82,8 @@ div.info {
 
 .center {
     display: block;
-    padding: 10px; 10px; 10px; 10px;
-    margin-left: auto;
-    margin-right: auto;
+    margin: 16px; 16px; 16px; 16px;
+    align: center;
     max-width: 50%;
 }
 
