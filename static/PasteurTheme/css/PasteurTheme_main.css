@@ -1396,6 +1396,9 @@ pre code{
 .col-xs-2{
     width:16.6666666667%
 }
+.mh-50 {
+max-height: 50px;
+}
 .col-xs-3{
     width:25%
 }
