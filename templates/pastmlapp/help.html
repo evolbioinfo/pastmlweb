@@ -1,5 +1,5 @@
-<div id="article">
-<h1>About PastML</h1>
+<div id="content">
+<h2>About PastML</h2>
 <p>PastML infers ancestral characters on a rooted phylogenetic tree with annotated tips, using maximum likelihood or
     parsimony. The result is then visualised as a zoomable html map.</p>
 
@@ -165,31 +165,11 @@
     allowing to navigate in time.</p>
 </div>
 
-<script>
-var ToC =
-  "<nav role='navigation' class='table-of-contents' style='float:right;'>" +
-    "<ul>";
 
-    var newLine, el, title, link;
-
-$("article h2").each(function() {
-
-  el = $(this);
-  title = el.text();
-  link = "#" + el.attr("id");
-
-  newLine =
-    "<li>" +
-      "<a href='" + link + "'>" +
-        title +
-      "</a>" +
-    "</li>";
-
-  ToC += newLine;
-
-});
-ToC +=
-   "</ul>" +
-  "</nav>";
-  $("article").prepend(ToC);
-</script>
+   <link rel='stylesheet' href='/static/css/jquery.jqTOC.css' type='text/css' />
+   <script type="text/javascript" src="/static/js/jquery.jqTOC.js"></script>
+   <script type="text/javascript">
+      $(document).ready(function(){
+         $('#content').jqTOC();
+      });
+   </script>
