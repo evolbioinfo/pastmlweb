@@ -1396,12 +1396,12 @@ pre code{
 .col-xs-2{
     width:16.6666666667%
 }
-.mh-50 {
-    max-height: 100%;
+img.mh-50 {
+    max-height: 50px;
     width: auto;
 }
 
-.img-container {
+li.img-container {
     height: 50px;
     min-wight: 1px;
     max-width: auto;
