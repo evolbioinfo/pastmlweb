@@ -88,6 +88,6 @@ div.info {
     max-width: 50%;
 }
 
-h4 {
-    font-weight:100;
+h4,h5 {
+    font-weight: bold;
 }

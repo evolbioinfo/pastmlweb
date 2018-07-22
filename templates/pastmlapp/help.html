@@ -108,4 +108,19 @@
             We then set the cut-off threshold to the 15-th largest node importance,
             and iteratively remove all leafs with smaller importance.
             Finally, we rerun horizontal merge as some of the previously different topologies might become identical after trimming.</p>
+
+    <h2>Multiple column analysis</h2>
+    <img src="/static/img/multistate.png" class="center"  style="height:400px;"/>
+    <p>When multiple columns are selected for ACR analysis,
+    we ACR independently to each character to obtain its ancestral states,
+    and visualize each character on the tree nodes as sectors.
+    If we could not choose a unique state for a character, we keep the corresponding sector uncolored (i.e. white).
+    Once the tree is colored and each node is assigned its combined states (pie of colors),
+        we compress the tree as described in the previous section.</p>
+
+    <h2>Timeline</h2>
+    <p>When sampling dates column is specified,
+    we visualize a timeline: For each year between the year of the first sampled tip and the year of the last sampled one,
+    we prune the tree to remove the tips sampled after this year, and add a slider to the visualization,
+        allowing to navigate in time.</p>
 </div>
