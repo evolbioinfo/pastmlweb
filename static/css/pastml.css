@@ -89,3 +89,7 @@ div.info {
 h4,h5 {
     font-weight: bold;
 }
+
+p.help-ref {
+margin-top: 20px;
+}
