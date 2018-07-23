@@ -115,7 +115,7 @@ class AnalysisForm(ModelForm):
         if multi_column:
             self.fields['date_column'] = forms.ChoiceField(required=False, choices=((None, ''),) + self.column_choices,
                                                            help_text=u'(optional) Column containing tip dates.')
-        self.fields.keyOrder = ['tip_id_column'] + (['column(s)', 'date_column'] if multi_column else ['column']) \
+        self.fields.keyOrder = ['tip_id_column'] + (['character_column(s)', 'date_column'] if multi_column else ['character_column']) \
                                + ['prediction_method', 'model', 'email', 'title']
         self.fields = OrderedDict((k, self.fields[k]) for k in self.fields.keyOrder)
 
