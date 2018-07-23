@@ -5,16 +5,17 @@ from django.db.models import SET_NULL
 MODEL_CHOICES = (
     ('F81', 'F81 (Felsenstein 1981)'),
     ('JC', 'JC (Jukes-Cantor)'),
+    ('EFT', 'EFT (estimate-from-tips)'),
 )
 
 METHOD_CHOICES = (
-    ('marginal_approx', 'max likelihood: marginal approximation'),
-    ('max_posteriori', 'max likelihood: maximum posteriori'),
+    ('marginal_approx', 'max likelihood: MPPA (marginal posterior probabilities approximation)'),
+    ('max_posteriori', 'max likelihood: MAP (maximum a posteriori)'),
     ('joint', 'max likelihood: joint'),
     # ('marginal', 'max likelihood: marginal'),
-    ('acctran', 'parsimony: acctran'),
-    ('deltran', 'parsimony: deltran'),
-    ('downpass', 'parsimony: downpass'),
+    ('acctran', 'max parsimony: ACCTRAN'),
+    ('deltran', 'max parsimony: DELTRAN'),
+    ('downpass', 'max parsimony: DOWNPASS'),
 )
 
 
