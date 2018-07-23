@@ -32,10 +32,12 @@ def apply_pastml(id, data, tree, data_sep, id_index, columns, date_column, model
                  html_compressed, email, title, url, work_dir):
     try:
         from cytopast.pastml_analyser import pastml_pipeline
+        import os
         pastml_pipeline(tree=tree, data=data, data_sep=data_sep, id_index=id_index, columns=columns,
                         date_column=date_column,
                         model=model, prediction_method=prediction_method, name_column=name_column,
-                        html_compressed=html_compressed, verbose=True, work_dir=work_dir)
+                        html_compressed=html_compressed, verbose=True,
+                        column2out_parameters={c: os.path.join(work_dir, '{}.params.csv'.format(c)) for c in columns})
     except Exception as e:
         with open(html_compressed, 'w+') as f:
             f.write('<p>Could not reconstruct the states, sorry...<br/>{}</p>'.format(str(e)))
