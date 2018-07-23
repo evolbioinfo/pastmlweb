@@ -103,7 +103,7 @@ class AnalysisForm(ModelForm):
 
         multi_column = len(self.column_choices) > 2
 
-        self.fields['column(s)' if multi_column else 'column'] = \
+        self.fields['character_column(s)' if multi_column else 'character_column'] = \
             MultiSelectFormField(choices=self.column_choices, max_choices=6, min_choices=1,
                                  help_text=u'Column(s) whose ancestral states are to be reconstructed.',
                                  widget=widgets.SelectMultiple) \
@@ -131,7 +131,7 @@ class AnalysisForm(ModelForm):
         super(AnalysisForm, self).save(commit=commit)
         analysis = self.instance
 
-        for _ in self.cleaned_data["column(s)"] if "column(s)" in self.cleaned_data else [self.cleaned_data['column']]:
+        for _ in self.cleaned_data["character_column(s)"] if "character_column(s)" in self.cleaned_data else [self.cleaned_data['character_column']]:
             Column.objects.create(
                 analysis=analysis,
                 column=_,
