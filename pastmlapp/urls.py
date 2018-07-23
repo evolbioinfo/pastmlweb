@@ -12,4 +12,6 @@ urlpatterns = [
     url(r'^view/(?P<id>[\d\w-]+)/$', views.detail, name='detail'),
     url(r'^feedback$', views.feedback, name='feedback'),
     url(r'^help$', views.helppage, name='help'),
+    url(r'^cite$', views.cite, name='cite'),
+    url(r'^install$', views.install, name='install'),
 ]

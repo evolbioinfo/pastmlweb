@@ -123,7 +123,21 @@ def feedback(request):
 
 def helppage(request):
     return render(request, 'pastmlapp/layout.html', {
-        'title': 'PastML',
+        'title': 'PastML How To',
         'content': render_to_string('pastmlapp/help.html')
+    })
+
+
+def cite(request):
+    return render(request, 'pastmlapp/layout.html', {
+        'title': 'Cite PastML',
+        'content': render_to_string('pastmlapp/cite.html')
+    })
+
+
+def install(request):
+    return render(request, 'pastmlapp/layout.html', {
+        'title': 'Install PastML locally',
+        'content': render_to_string('pastmlapp/install.html')
     })
 
