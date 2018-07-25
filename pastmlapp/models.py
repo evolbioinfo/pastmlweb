@@ -13,8 +13,8 @@ METHOD_CHOICES = (
     ('max_posteriori', 'max likelihood: MAP (maximum a posteriori)'),
     ('joint', 'max likelihood: joint'),
     # ('marginal', 'max likelihood: marginal'),
-    ('acctran', 'max parsimony: ACCTRAN'),
-    ('deltran', 'max parsimony: DELTRAN'),
+    ('acctran', 'max parsimony: ACCTRAN (accelerated transformation)'),
+    ('deltran', 'max parsimony: DELTRAN (delayed transformation)'),
     ('downpass', 'max parsimony: DOWNPASS'),
 )
 
@@ -60,8 +60,8 @@ class Analysis(models.Model):
 
     email = models.EmailField(default=None, blank=True, null=True,
                               help_text=u"If specified, you'll receive an email at this address "
-                                        u"once the PASTML reconstruction is ready.")
-    title = models.CharField(max_length=128, default='PASTML is ready!', blank=True, null=True,
+                                        u"once the PastML reconstruction is ready.")
+    title = models.CharField(max_length=128, default='PastML reconstruction is ready!', blank=True, null=True,
                              help_text=u"The title to be used in the email.")
 
     html_compressed = models.CharField(max_length=256, default=None, blank=True, null=True)
@@ -73,5 +73,5 @@ class Column(models.Model):
     analysis = models.ForeignKey('pastmlapp.Analysis', null=True, on_delete=SET_NULL)
 
     column = models.CharField(max_length=512,
-                              help_text=u'Column containing tip values for the state to be reconstructed with PASTML.')
+                              help_text=u'Column containing tip values for the state to be reconstructed with PastML.')
 

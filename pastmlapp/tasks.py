@@ -11,19 +11,67 @@ def send_feedback_email(email, message):
     logger.info("Sent feedback email")
     from django.core.mail import EmailMessage
 
-    email = EmailMessage(subject='PASTML web feedback', body=message, to=('anna.zhukova@pasteur.fr', ),
+    email = EmailMessage(subject='PastML web feedback', body=message, to=('anna.zhukova@pasteur.fr', ),
                          attachments=None, headers=None, cc=None, reply_to=(email,))
     return email.send(fail_silently=False)
 
 
 @task(name="send_analysis_email")
-def send_analysis_email(email, url, title):
-    """sends an email when feedback form is filled successfully"""
+def send_analysis_email(email, url, id, title, columns, model, prediction_method, error=False):
+    """sends an email when PastML analysis is finished"""
     logger.info("Sent analysis is ready email")
     from django.core.mail import EmailMessage
+    from cytopast.pastml_analyser import is_ml
 
-    email = EmailMessage(subject='Your PASTML analysis is ready' if not title else title,
-                         body='You PASTML ancestral state reconstruction is available at {}'.format(url),
+    result_url = 'http://{}{}'.format(url, reverse('pastmlapp:detail', args=(id,)))
+    help_url = 'http://{}{}'.format(url, reverse('pastmlapp:help'))
+    feedback_url = 'http://{}{}'.format(url, reverse('pastmlapp:feedback'))
+
+    if not error:
+        body = """Dear PastML user,
+
+You PastML ancestral scenario reconstruction is now ready and available at {url} .
+We reconstructed the ancestral characters for {columns}, with {method}.
+
+If you want to know more about PastML ancestral character reconstruction and visualisation algorithms please see our help page: {help} .
+
+If you have experienced any problem or have suggestions on how to improve PastML (or just want to share your love for PastML :) ), 
+please contact us via the feedback form: {feedback} or send an email to anna.zhukova@pasteur.fr.
+
+Kind regards,
+PastML team
+
+--
+Evolutionary Bioinformatics
+C3BI, USR 3756 IP CNRS
+Paris, France
+""".format(url=result_url, help=help_url, feedback=feedback_url, columns=','.join(columns),
+           method='{} (model {})'.format(prediction_method, model) if is_ml(prediction_method) else prediction_method)
+
+    else:
+        body = """Dear PastML user,
+
+Unfortunately we did not manage to reconstruct the ancestral scenario for your data, you might see more details at {url} .
+We tried to perform the ancestral characters for {columns}, with {method}.
+
+We were informed about this problem and are trying to fix it.
+
+In the meanwhile, you can verify that your input data was correctly formatted: see our help page: {help} for input data format),
+and/or contact us via the feedback form: {feedback} or send an email to anna.zhukova@pasteur.fr to give us any additional details.
+
+Kind regards,
+PastML team
+
+--
+Evolutionary Bioinformatics
+C3BI, USR 3756 IP CNRS
+Paris, France
+""".format(url=result_url, help=help_url, feedback=feedback_url, columns=','.join(columns),
+               method='{} (model {})'.format(prediction_method, model) if is_ml(
+                   prediction_method) else prediction_method)
+
+    email = EmailMessage(subject='Your PastML analysis is ready' if not title else title,
+                         body=body,
                          to=(email, ), attachments=None, headers=None, cc=None)
     return email.send(fail_silently=False)
 
@@ -48,10 +96,13 @@ def apply_pastml(id, data, tree, data_sep, id_index, columns, date_column, model
             shutil.rmtree(work_dir)
         except:
             pass
+        if email:
+            send_analysis_email.delay(email, url, id, title, columns, model, prediction_method, False)
     except Exception as e:
         with open(html_compressed, 'w+') as f:
             f.write('<p>Could not reconstruct the states, sorry...<br/>{}</p>'.format(str(e)))
+        if email:
+            url = 'http://{}{}'.format(url, reverse('pastmlapp:detail', args=(id,)))
+            send_analysis_email.delay(email, url, id, title, columns, model, prediction_method, True)
+            send_analysis_email.delay('anna.zhukova@pasteur.fr', url, id, title, columns, model, prediction_method, True)
         raise e
-    if email:
-        url = 'http://{}{}'.format(url, reverse('pastmlapp:detail', args=(id,)))
-        send_analysis_email.delay(email, url, title)
