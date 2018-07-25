@@ -15,6 +15,7 @@ def send_feedback_email(email, message):
                          attachments=None, headers=None, cc=None, reply_to=(email,))
     return email.send(fail_silently=False)
 
+
 @task(name="send_analysis_email")
 def send_analysis_email(email, url, title):
     """sends an email when feedback form is filled successfully"""
@@ -31,13 +32,23 @@ def send_analysis_email(email, url, title):
 def apply_pastml(id, data, tree, data_sep, id_index, columns, date_column, model, prediction_method, name_column,
                  html_compressed, email, title, url, work_dir):
     try:
-        from cytopast.pastml_analyser import pastml_pipeline
+        from cytopast.pastml_analyser import pastml_pipeline, read_tree
         import os
+        import shutil
+        tree = read_tree(tree)
+        html = None
+        if len(tree) <= 500:
+            html = os.path.join(work_dir, 'pastml_tree.html')
+
         pastml_pipeline(tree=tree, data=data, data_sep=data_sep, id_index=id_index, columns=columns,
                         date_column=date_column,
                         model=model, prediction_method=prediction_method, name_column=name_column,
-                        html_compressed=html_compressed, verbose=True,
-                        column2out_parameters={c: os.path.join(work_dir, '{}.params.csv'.format(c)) for c in columns})
+                        html_compressed=html_compressed, html=html, verbose=True, work_dir=work_dir)
+        shutil.make_archive(os.path.join(work_dir, '..', 'pastml_{}.zip'.format(id)), 'zip', work_dir)
+        try:
+            shutil.rmtree(work_dir)
+        except:
+            pass
     except Exception as e:
         with open(html_compressed, 'w+') as f:
             f.write('<p>Could not reconstruct the states, sorry...<br/>{}</p>'.format(str(e)))

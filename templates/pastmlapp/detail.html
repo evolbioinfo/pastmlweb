@@ -6,7 +6,7 @@
  <iframe src="{% url 'pastmlapp:result' id=id %}"  width="100%" height="500" id="vis" allowfullscreen></iframe>
  </div>
  <div class="info"><p><a href="{% url 'pastmlapp:result' id=id %}" class="btn btn-primary" download>Download</a><span class="helptext"> this visualisation as an HTML page.</span></p></div>
-
+ <div class="info"><p><a href="{% media 'pastml_{}.zip'.format(id) %}" class="btn btn-primary" download>Download</a><span class="helptext"> all the associated data.</span></p></div>
 
 
 <p class="help-ref"><i>(You can learn more about this visualisation <a href="{% url 'pastmlapp:help' %}#visualisation" target="_blank">here</a>.)</i></p>
