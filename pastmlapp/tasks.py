@@ -43,7 +43,7 @@ def apply_pastml(id, data, tree, data_sep, id_index, columns, date_column, model
                         date_column=date_column,
                         model=model, prediction_method=prediction_method, name_column=name_column,
                         html_compressed=html_compressed, html=html, verbose=True, work_dir=work_dir)
-        shutil.make_archive(os.path.join(work_dir, '..', 'pastml_{}.zip'.format(id)), 'zip', work_dir)
+        shutil.make_archive(os.path.join(work_dir, '..', 'pastml_{}'.format(id)), 'zip', work_dir)
         try:
             shutil.rmtree(work_dir)
         except:
