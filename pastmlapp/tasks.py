@@ -35,9 +35,8 @@ def apply_pastml(id, data, tree, data_sep, id_index, columns, date_column, model
         from cytopast.pastml_analyser import pastml_pipeline, read_tree
         import os
         import shutil
-        tree = read_tree(tree)
         html = None
-        if len(tree) <= 500:
+        if len(read_tree(tree)) <= 500:
             html = os.path.join(work_dir, 'pastml_tree.html')
 
         pastml_pipeline(tree=tree, data=data, data_sep=data_sep, id_index=id_index, columns=columns,
