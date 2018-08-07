@@ -69,7 +69,7 @@ C3BI, USR 3756 IP CNRS
 Paris, France
 """.format(url=result_url, help=help_url, feedback=feedback_url, columns=','.join(columns),
                method='{} (model {})'.format(prediction_method, model) if is_ml(
-                   prediction_method) else prediction_method, error=str(error))
+                   prediction_method) else prediction_method, error=error)
 
     email = EmailMessage(subject='Your PastML analysis is ready' if not title else title,
                          body=body,
@@ -100,9 +100,10 @@ def apply_pastml(id, data, tree, data_sep, id_index, columns, date_column, model
         if email:
             send_analysis_email.delay(email, url, id, title, columns, model, prediction_method, None)
     except Exception as e:
+        e_str = str(e)
         with open(html_compressed, 'w+') as f:
-            f.write('<p>Could not reconstruct the states, sorry...<br/>{}</p>'.format(str(e)))
+            f.write('<p>Could not reconstruct the states, sorry...<br/>{}</p>'.format(e_str))
         if email:
-            send_analysis_email.delay(email, url, id, title, columns, model, prediction_method, e)
-            send_analysis_email.delay('anna.zhukova@pasteur.fr', url, id, title, columns, model, prediction_method, e)
+            send_analysis_email.delay(email, url, id, title, columns, model, prediction_method, e_str)
+            send_analysis_email.delay('anna.zhukova@pasteur.fr', url, id, title, columns, model, prediction_method, e_str)
         raise e
