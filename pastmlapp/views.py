@@ -23,7 +23,7 @@ def detail(request, id):
         columns = [column.column for column in Column.objects.filter(
                 analysis=analysis
             )]
-        something_is_wrong = not os.path.exists(os.path.join(os.path.dirname(analysis.html_compressed), 'pastml_{}.zip').format(id))
+        something_is_wrong = not os.path.exists(os.path.join(os.path.dirname(analysis.html_compressed), 'pastml_{}.zip'.format(id)))
         context = {'id': id, 'model': analysis.model, 'prediction_method': analysis.prediction_method,
                    'columns': ', '.join(columns), 'rec_error': something_is_wrong}
     else:
