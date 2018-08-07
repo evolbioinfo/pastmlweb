@@ -25,8 +25,8 @@ def detail(request, id):
             )]
         context = {'id': id, 'model': analysis.model, 'prediction_method': analysis.prediction_method,
                    'columns': ', '.join(columns)}
-
-        if not os.path.exists(os.path.join(os.path.dirname(analysis.html_compressed), 'pastml_{}.zip'.format(id))):
+        if not os.path.exists(analysis.html_compressed.replace('{}.compressed.html'.format(analysis.id),
+                                                               'pastml_{}.zip'.format(analysis.id))):
             context['rec_error'] = True
 
     else:
