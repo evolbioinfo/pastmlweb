@@ -36,7 +36,7 @@ We reconstructed the ancestral characters for {columns}, with {method}.
 If you want to know more about PastML ancestral character reconstruction and visualisation algorithms please see our help page: {help} .
 
 If you have experienced any problem or have suggestions on how to improve PastML (or just want to share your love for PastML :) ), 
-please contact us via the feedback form: {feedback} or send an email to anna.zhukova@pasteur.fr.
+please contact us via the feedback form ({feedback}) or send an email to anna.zhukova@pasteur.fr.
 
 Kind regards,
 PastML team
@@ -53,12 +53,12 @@ Paris, France
 
 Unfortunately we did not manage to reconstruct the ancestral scenario for your data, you might see more details at {url} .
 We tried to perform the ancestral character reconstruction for {columns}, with {method}, but got the following error:
-{error}
+"{error}"
 
 We were informed about this problem and are trying to fix it.
 
-In the meanwhile, you can verify that your input data was correctly formatted: see our help page: {help} for input data format),
-and/or contact us via the feedback form: {feedback} or send an email to anna.zhukova@pasteur.fr to give us any additional details.
+In the meanwhile, you can verify that your input data was correctly formatted (see our help page: {help} for input data format),
+and/or contact us via the feedback form ({feedback}) or send an email to anna.zhukova@pasteur.fr to give us any additional details.
 
 Kind regards,
 PastML team
@@ -102,7 +102,7 @@ def apply_pastml(id, data, tree, data_sep, id_index, columns, date_column, model
     except Exception as e:
         e_str = str(e)
         with open(html_compressed, 'w+') as f:
-            f.write('<p>Could not reconstruct the states, sorry...<br/>{}</p>'.format(e_str))
+            f.write('<p>Could not reconstruct the states...<br/>{}</p>'.format(e_str))
         if email:
             send_analysis_email.delay(email, url, id, title, columns, model, prediction_method, e_str)
             send_analysis_email.delay('anna.zhukova@pasteur.fr', url, id, title, columns, model, prediction_method, e_str)
