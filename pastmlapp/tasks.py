@@ -69,7 +69,7 @@ C3BI, USR 3756 IP CNRS
 Paris, France
 """.format(url=result_url, help=help_url, feedback=feedback_url, columns=','.join(columns),
                method='{} (model {})'.format(prediction_method, model) if is_ml(
-                   prediction_method) else prediction_method, error=error)
+                   prediction_method) else prediction_method, error=str(error))
 
     email = EmailMessage(subject='Your PastML analysis is ready' if not title else title,
                          body=body,
