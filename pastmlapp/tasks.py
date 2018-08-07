@@ -17,7 +17,7 @@ def send_feedback_email(email, message):
 
 
 @task(name="send_analysis_email")
-def send_analysis_email(email, url, id, title, columns, model, prediction_method, error=False):
+def send_analysis_email(email, url, id, title, columns, model, prediction_method, error=None):
     """sends an email when PastML analysis is finished"""
     logger.info("Sent analysis is ready email")
     from django.core.mail import EmailMessage
@@ -52,7 +52,8 @@ Paris, France
         body = """Dear PastML user,
 
 Unfortunately we did not manage to reconstruct the ancestral scenario for your data, you might see more details at {url} .
-We tried to perform the ancestral characters for {columns}, with {method}.
+We tried to perform the ancestral character reconstruction for {columns}, with {method}, but got the following error:
+{error}
 
 We were informed about this problem and are trying to fix it.
 
@@ -68,7 +69,7 @@ C3BI, USR 3756 IP CNRS
 Paris, France
 """.format(url=result_url, help=help_url, feedback=feedback_url, columns=','.join(columns),
                method='{} (model {})'.format(prediction_method, model) if is_ml(
-                   prediction_method) else prediction_method)
+                   prediction_method) else prediction_method, error=error)
 
     email = EmailMessage(subject='Your PastML analysis is ready' if not title else title,
                          body=body,
@@ -97,12 +98,11 @@ def apply_pastml(id, data, tree, data_sep, id_index, columns, date_column, model
         except:
             pass
         if email:
-            send_analysis_email.delay(email, url, id, title, columns, model, prediction_method, False)
+            send_analysis_email.delay(email, url, id, title, columns, model, prediction_method, None)
     except Exception as e:
         with open(html_compressed, 'w+') as f:
             f.write('<p>Could not reconstruct the states, sorry...<br/>{}</p>'.format(str(e)))
         if email:
-            url = 'http://{}{}'.format(url, reverse('pastmlapp:detail', args=(id,)))
-            send_analysis_email.delay(email, url, id, title, columns, model, prediction_method, True)
-            send_analysis_email.delay('anna.zhukova@pasteur.fr', url, id, title, columns, model, prediction_method, True)
+            send_analysis_email.delay(email, url, id, title, columns, model, prediction_method, e)
+            send_analysis_email.delay('anna.zhukova@pasteur.fr', url, id, title, columns, model, prediction_method, e)
         raise e

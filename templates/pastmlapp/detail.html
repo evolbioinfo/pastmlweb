@@ -2,14 +2,20 @@
  <p class="error">{{ error }}</p>
 {% elif id %}
  <h3>Ancestral reconstruction of {{columns}} (with {{prediction_method}} method{% if "marginal" in prediction_method or "joint" == prediction_method %} and model {{model}}{% endif %})</h3>
+{% if rec_error %}
+ <p>Sorry, there was a problem with your reconstruction: </p>
+{% endif %}
  <div id="resizable">
- <iframe src="{% url 'pastmlapp:result' id=id %}"  width="100%" height="500" id="vis" allowfullscreen></iframe>
+ <iframe src="{% url 'pastmlapp:result' id=id %}"  width="100%" height="{% if rec_error %} 100 {% else %} 500 {% endif %}" id="vis" allowfullscreen></iframe>
  </div>
+{% if rec_error %}
+ <p class="help-ref"><i>Please, make sure that you tree and annotation data were <a href="{% url 'pastmlapp:help' %}#data" target="_blank">formatted properly</a>,
+  and <a href="{% url 'pastmlapp:feedback' %}" target="_blank">let us know</a> about this issue.</i></p>
+{% else %}
  <div class="info"><p><a href="{% url 'pastmlapp:result' id=id %}" class="btn btn-primary" download>Download</a><span class="helptext"> this visualisation as an HTML page.</span></p></div>
  <div class="info"><p><a href="/media/pastml_{{id}}.zip" class="btn btn-primary" download>Download</a><span class="helptext"> all the associated data.</span></p></div>
-
-
-<p class="help-ref"><i>(You can learn more about this visualisation <a href="{% url 'pastmlapp:help' %}#visualisation" target="_blank">here</a>.)</i></p>
+ <p class="help-ref"><i>(You can learn more about this visualisation <a href="{% url 'pastmlapp:help' %}#visualisation" target="_blank">here</a>.)</i></p>
+{% endif %}
 
  <script type="text/javascript">
      $('#vis').css('height', $(window).height() +'px');
