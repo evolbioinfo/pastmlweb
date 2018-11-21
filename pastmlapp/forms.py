@@ -1,10 +1,10 @@
-import os
 from collections import OrderedDict
 
 from django import forms
 from django.core.exceptions import NON_FIELD_ERRORS
 from ete3 import Tree
 from multiselectfield import MultiSelectFormField
+from pastml.ml import is_ml
 
 from pastmlapp.models import TreeData, Analysis, Column
 from pastmlapp.tasks import send_feedback_email
@@ -121,7 +121,7 @@ class AnalysisForm(ModelForm):
 
     def clean_prediction_method(self):
         m = self.cleaned_data['prediction_method']
-        if not ('marginal' in m or 'joint' == m):
+        if not is_ml(m):
             self.fields['model'].required = False
         return m
 

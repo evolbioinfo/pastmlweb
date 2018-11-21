@@ -21,7 +21,7 @@ def send_analysis_email(email, url, id, title, columns, model, prediction_method
     """sends an email when PastML analysis is finished"""
     logger.info("Sent analysis is ready email")
     from django.core.mail import EmailMessage
-    from cytopast.pastml_analyser import is_ml
+    from pastml.ml import is_ml
 
     result_url = 'http://{}{}'.format(url, reverse('pastmlapp:detail', args=(id,)))
     help_url = 'http://{}{}'.format(url, reverse('pastmlapp:help'))
@@ -81,7 +81,8 @@ Paris, France
 def apply_pastml(id, data, tree, data_sep, id_index, columns, date_column, model, prediction_method, name_column,
                  html_compressed, email, title, url, work_dir):
     try:
-        from cytopast.pastml_analyser import pastml_pipeline, read_tree
+        from pastml.acr import pastml_pipeline
+        from pastml.tree import read_tree
         import os
         import shutil
         html = None

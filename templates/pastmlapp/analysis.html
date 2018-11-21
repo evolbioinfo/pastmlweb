@@ -41,7 +41,7 @@
 
     function adjustModelToMethod(pm) {
         var m = document.getElementById("id_model");
-        if (pm.value != "marginal_approx" && pm.value !="max_posteriori" && pm.value != "joint") {
+        if (pm.value != "MPPA" && pm.value !="MAP" && pm.value != "JOINT") {
             m.disabled = true;
             m.parentNode.style.opacity = "0.5";
         } else {

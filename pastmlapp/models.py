@@ -1,21 +1,23 @@
 import uuid as uuid
+
 from django.db import models
 from django.db.models import SET_NULL
+from pastml.ml import MPPA, MAP, JOINT, F81, JC, EFT
+from pastml.parsimony import ACCTRAN, DELTRAN, DOWNPASS
 
 MODEL_CHOICES = (
-    ('F81', 'F81 (Felsenstein 1981)'),
-    ('JC', 'JC (Jukes-Cantor)'),
-    ('EFT', 'EFT (estimate-from-tips)'),
+    (F81, 'F81 (Felsenstein 1981)'),
+    (JC, 'JC (Jukes-Cantor)'),
+    (EFT, 'EFT (estimate-from-tips)'),
 )
 
 METHOD_CHOICES = (
-    ('marginal_approx', 'max likelihood: MPPA (marginal posterior probabilities approximation)'),
-    ('max_posteriori', 'max likelihood: MAP (maximum a posteriori)'),
-    ('joint', 'max likelihood: joint'),
-    # ('marginal', 'max likelihood: marginal'),
-    ('acctran', 'max parsimony: ACCTRAN (accelerated transformation)'),
-    ('deltran', 'max parsimony: DELTRAN (delayed transformation)'),
-    ('downpass', 'max parsimony: DOWNPASS'),
+    (MPPA, 'max likelihood: MPPA (marginal posterior probabilities approximation)'),
+    (MAP, 'max likelihood: MAP (maximum a posteriori)'),
+    (JOINT, 'max likelihood: joint'),
+    (ACCTRAN, 'max parsimony: ACCTRAN (accelerated transformation)'),
+    (DELTRAN, 'max parsimony: DELTRAN (delayed transformation)'),
+    (DOWNPASS, 'max parsimony: DOWNPASS'),
 )
 
 
@@ -53,9 +55,9 @@ class Analysis(models.Model):
     date_column = models.CharField(max_length=128, default=None, blank=True, null=True,
                                    help_text=u'(optional) Column containing tip dates.')
 
-    model = models.CharField(max_length=4, default='F81', choices=MODEL_CHOICES,
+    model = models.CharField(max_length=4, default=F81, choices=MODEL_CHOICES,
                              help_text=u'Evolutionary model for state changes (for max likelihood methods only).')
-    prediction_method = models.CharField(max_length=128, default='marginal_approx', choices=METHOD_CHOICES,
+    prediction_method = models.CharField(max_length=128, default=MPPA, choices=METHOD_CHOICES,
                                          help_text=u'Ancestral state prediction method.')
 
     email = models.EmailField(default=None, blank=True, null=True,

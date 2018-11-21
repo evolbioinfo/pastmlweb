@@ -1,7 +1,7 @@
 {% if error %}
  <p class="error">{{ error }}</p>
 {% elif id %}
- <h3>Ancestral reconstruction of {{columns}} (with {{prediction_method}} method{% if "marginal" in prediction_method or "joint" == prediction_method %} and model {{model}}{% endif %})</h3>
+ <h3>Ancestral reconstruction of {{columns}} (with {{prediction_method}} method{% if model %} and model {{model}}{% endif %})</h3>
 {% if rec_error %}
  <p>Sorry, there was a problem with your reconstruction: </p>
 {% endif %}

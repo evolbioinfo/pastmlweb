@@ -3,6 +3,7 @@ import datetime
 from django.contrib.sites.models import Site
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
+from pastml.ml import F81, is_ml
 
 from pastmlapp.forms import FeedbackForm, TreeDataForm, AnalysisForm
 from pastmlapp.models import TreeData, Analysis, Column
@@ -23,7 +24,8 @@ def detail(request, id):
         columns = [column.column for column in Column.objects.filter(
                 analysis=analysis
             )]
-        context = {'id': id, 'model': analysis.model, 'prediction_method': analysis.prediction_method,
+        context = {'id': id, 'model': analysis.model if is_ml(analysis.prediction_method) else None,
+                   'prediction_method': analysis.prediction_method,
                    'columns': ', '.join(columns)}
         if not os.path.exists(analysis.html_compressed.replace('{}.compressed.html'.format(analysis.id),
                                                                'pastml_{}.zip'.format(analysis.id))):
@@ -90,7 +92,7 @@ def analysis(request, id):
                                data_sep=tree_data.data_sep if tree_data.data_sep and tree_data.data_sep != '<tab>' else '\t',
                                id_index=form.cleaned_data['id_column'], columns=columns,
                                date_column=form.cleaned_data['date_column'] if 'date_column' in form.cleaned_data else None,
-                               model=form.cleaned_data['model'] if 'model' in form.cleaned_data and form.cleaned_data['model'] else 'JC',
+                               model=form.cleaned_data['model'] if 'model' in form.cleaned_data and form.cleaned_data['model'] else F81,
                                prediction_method=form.cleaned_data['prediction_method'],
                                name_column=columns[0], html_compressed=html_compressed, email=form.cleaned_data['email'],
                                title=form.cleaned_data['title'], url=Site.objects.get_current(request=request).domain,
