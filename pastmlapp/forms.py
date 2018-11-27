@@ -115,7 +115,8 @@ class AnalysisForm(ModelForm):
         if multi_column:
             self.fields['date_column'] = forms.ChoiceField(required=False, choices=((None, ''),) + self.column_choices,
                                                            help_text=u'(optional) Column containing tip dates.')
-        self.fields.keyOrder = ['tip_id_column'] + (['character_column(s)', 'date_column'] if multi_column else ['character_column']) \
+        self.fields.keyOrder = ['tip_id_column'] \
+                               + (['character_column(s)', 'date_column'] if multi_column else ['character_column']) \
                                + ['prediction_method', 'model', 'email', 'title']
         self.fields = OrderedDict((k, self.fields[k]) for k in self.fields.keyOrder)
 
@@ -131,7 +132,8 @@ class AnalysisForm(ModelForm):
         super(AnalysisForm, self).save(commit=commit)
         analysis = self.instance
 
-        for _ in self.cleaned_data["character_column(s)"] if "character_column(s)" in self.cleaned_data else [self.cleaned_data['character_column']]:
+        for _ in self.cleaned_data["character_column(s)"] if "character_column(s)" in self.cleaned_data \
+                else [self.cleaned_data['character_column']]:
             Column.objects.create(
                 analysis=analysis,
                 column=_,

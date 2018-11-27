@@ -41,7 +41,7 @@
 
     function adjustModelToMethod(pm) {
         var m = document.getElementById("id_model");
-        if (pm.value != "MPPA" && pm.value !="MAP" && pm.value != "JOINT") {
+        if (pm.value != "MPPA" && pm.value !="MAP" && pm.value != "JOINT" && pm.value != "ML" && pm.value != "ALL") {
             m.disabled = true;
             m.parentNode.style.opacity = "0.5";
         } else {

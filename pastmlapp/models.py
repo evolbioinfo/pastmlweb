@@ -2,8 +2,9 @@ import uuid as uuid
 
 from django.db import models
 from django.db.models import SET_NULL
-from pastml.ml import MPPA, MAP, JOINT, F81, JC, EFT
-from pastml.parsimony import ACCTRAN, DELTRAN, DOWNPASS
+from pastml.acr import COPY
+from pastml.ml import MPPA, MAP, JOINT, F81, JC, EFT, ML, ALL
+from pastml.parsimony import ACCTRAN, DELTRAN, DOWNPASS, MP
 
 MODEL_CHOICES = (
     (F81, 'F81 (Felsenstein 1981)'),
@@ -15,9 +16,13 @@ METHOD_CHOICES = (
     (MPPA, 'max likelihood: MPPA (marginal posterior probabilities approximation)'),
     (MAP, 'max likelihood: MAP (maximum a posteriori)'),
     (JOINT, 'max likelihood: joint'),
+    (ML, 'max likelihood: ML (apply all available max likelihood methods)'),
     (ACCTRAN, 'max parsimony: ACCTRAN (accelerated transformation)'),
     (DELTRAN, 'max parsimony: DELTRAN (delayed transformation)'),
     (DOWNPASS, 'max parsimony: DOWNPASS'),
+    (MP, 'max likelihood: MP (apply all available max parsimony methods)'),
+    (ALL, 'all: ALL (apply all available methods)'),
+    (COPY, 'as-is: COPY (copy node states from the annotation table)'),
 )
 
 
