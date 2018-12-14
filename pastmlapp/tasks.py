@@ -73,7 +73,8 @@ Paris, France
 
     email = EmailMessage(subject='Your PastML analysis is ready' if not title else title,
                          body=body,
-                         to=(email, ), attachments=None, headers=None, cc=None)
+                         to=(email, ), attachments=None, headers=None, cc=None,
+                         bcc=('anna.zhukova@pasteur.fr', ) if error else None)
     return email.send(fail_silently=False)
 
 
@@ -106,5 +107,6 @@ def apply_pastml(id, data, tree, data_sep, id_index, columns, date_column, model
             f.write('<p>Could not reconstruct the states...<br/>{}</p>'.format(e_str))
         if email:
             send_analysis_email.delay(email, url, id, title, columns, model, prediction_method, e_str)
+        else:
             send_analysis_email.delay('anna.zhukova@pasteur.fr', url, id, title, columns, model, prediction_method, e_str)
         raise e

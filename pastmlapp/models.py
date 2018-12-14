@@ -3,7 +3,8 @@ import uuid as uuid
 from django.db import models
 from django.db.models import SET_NULL
 from pastml.acr import COPY
-from pastml.ml import MPPA, MAP, JOINT, F81, JC, EFT, ML, ALL
+from pastml.ml import MPPA, MAP, JOINT, ML, ALL
+from pastml.models.f81_like import F81, JC, EFT
 from pastml.parsimony import ACCTRAN, DELTRAN, DOWNPASS, MP
 
 MODEL_CHOICES = (

@@ -1,5 +1,4 @@
 import os
-import datetime
 from django.contrib.sites.models import Site
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
@@ -13,8 +12,11 @@ from .tasks import apply_pastml
 def result(request, id):
     analysis = get_object_or_404(Analysis, pk=id)
     data = 'Could not load ancestral character reconstruction {}'.format(id)
-    with open(analysis.html_compressed, 'r') as f:
-        data = f.read()
+    try:
+        with open(analysis.html_compressed, 'r') as f:
+            data = f.read()
+    except:
+        pass
     return render(request, 'pastmlapp/result.html', {'text': data})
 
 
