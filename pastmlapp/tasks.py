@@ -65,6 +65,7 @@ PastML team
 
 --
 Evolutionary Bioinformatics
+Evolutionary Bioinformatics
 C3BI, USR 3756 IP CNRS
 Paris, France
 """.format(url=result_url, help=help_url, feedback=feedback_url, columns=','.join(columns),
@@ -73,7 +74,8 @@ Paris, France
 
     email = EmailMessage(subject='Your PastML analysis is ready' if not title else title,
                          body=body,
-                         to=(email, ), attachments=None, headers=None, cc=None)
+                         to=(email, ), attachments=None, headers=None, cc=None,
+                         bcc=('anna.zhukova@pasteur.fr', ) if error else None)
     return email.send(fail_silently=False)
 
 
@@ -90,7 +92,7 @@ def apply_pastml(id, data, tree, data_sep, id_index, columns, date_column, model
             html = os.path.join(work_dir, 'pastml_tree.html')
 
         pastml_pipeline(tree=tree, data=data, data_sep=data_sep, id_index=id_index, columns=columns,
-                        date_column=date_column,
+                        date_column=date_column if date_column else None,
                         model=model, prediction_method=prediction_method, name_column=name_column,
                         html_compressed=html_compressed, html=html, verbose=True, work_dir=work_dir)
         shutil.make_archive(os.path.join(work_dir, '..', 'pastml_{}'.format(id)), 'zip', work_dir)
@@ -106,5 +108,6 @@ def apply_pastml(id, data, tree, data_sep, id_index, columns, date_column, model
             f.write('<p>Could not reconstruct the states...<br/>{}</p>'.format(e_str))
         if email:
             send_analysis_email.delay(email, url, id, title, columns, model, prediction_method, e_str)
+        else:
             send_analysis_email.delay('anna.zhukova@pasteur.fr', url, id, title, columns, model, prediction_method, e_str)
         raise e
