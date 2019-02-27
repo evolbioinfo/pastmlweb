@@ -30,12 +30,12 @@ def send_analysis_email(email, url, id, title, columns, model, prediction_method
     if not error:
         body = """Dear PastML user,
 
-You PastML ancestral scenario reconstruction is now ready and available at {url} .
-We reconstructed the ancestral characters for {columns}, with {method}.
+You PastML ancestral scenario reconstruction is now ready and available at {url}.
+We reconstructed ancestral characters with {method} for {columns}.
 
-If you want to know more about PastML ancestral character reconstruction and visualisation algorithms please see our help page: {help} .
+If you want to know more about PastML ancestral character reconstruction and visualisation algorithms please have a look at our help page: {help}.
 
-If you have experienced any problem or have suggestions on how to improve PastML (or just want to share your love for PastML :) ), 
+If you have experienced any problem or have suggestions on how to improve PastML, 
 please contact us via the feedback form ({feedback}) or send an email to anna.zhukova@pasteur.fr.
 
 Kind regards,
@@ -45,30 +45,29 @@ PastML team
 Evolutionary Bioinformatics
 C3BI, USR 3756 IP CNRS
 Paris, France
-""".format(url=result_url, help=help_url, feedback=feedback_url, columns=','.join(columns),
+""".format(url=result_url, help=help_url, feedback=feedback_url, columns=', '.join(columns),
            method='{} (model {})'.format(prediction_method, model) if is_ml(prediction_method) else prediction_method)
 
     else:
         body = """Dear PastML user,
 
-Unfortunately we did not manage to reconstruct the ancestral scenario for your data, you might see more details at {url} .
-We tried to perform the ancestral character reconstruction for {columns}, with {method}, but got the following error:
+Unfortunately we did not manage to reconstruct the ancestral scenario for your data, you might see more details at {url}.
+We tried to perform ancestral character reconstruction with {method} for {columns}, but got the following error:
 "{error}"
 
-We were informed about this problem and are trying to fix it.
+Please make sure that your input data was correctly formatted (see our help page: {help} for input data format). 
 
-In the meanwhile, you can verify that your input data was correctly formatted (see our help page: {help} for input data format),
-and/or contact us via the feedback form ({feedback}) or send an email to anna.zhukova@pasteur.fr to give us any additional details.
+On our side, we were informed about this problem and are trying to fix it. 
+If you wish to give us any additional details, please contact us via the feedback form ({feedback}) or send an email to anna.zhukova@pasteur.fr.
 
 Kind regards,
 PastML team
 
 --
 Evolutionary Bioinformatics
-Evolutionary Bioinformatics
 C3BI, USR 3756 IP CNRS
 Paris, France
-""".format(url=result_url, help=help_url, feedback=feedback_url, columns=','.join(columns),
+""".format(url=result_url, help=help_url, feedback=feedback_url, columns=', '.join(columns),
                method='{} (model {})'.format(prediction_method, model) if is_ml(
                    prediction_method) else prediction_method, error=error)
 
