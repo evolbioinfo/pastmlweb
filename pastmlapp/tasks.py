@@ -102,7 +102,7 @@ def apply_pastml(id, data, tree, data_sep, id_index, columns, date_column, model
                         upload_to_itol=True, itol_id='ZxuhG2okfKLQnsgd5xAEGQ', itol_project='pastmlweb',
                         itol_tree_name=id)
         itol_id = None
-        itol_id_file = os.path.join(work_dir, 'iTOL_id.txt')
+        itol_id_file = os.path.join(work_dir, 'iTOL_tree_id.txt')
         if os.path.exists(itol_id_file):
             with open(itol_id_file, 'r') as f:
                 itol_id = f.readline().strip('\n')
