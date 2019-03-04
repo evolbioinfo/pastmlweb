@@ -31,7 +31,7 @@ def detail(request, id):
                    'columns': ', '.join(columns)}
         itol_id_file = os.path.join(os.path.dirname(analysis.html_compressed), 'pastml_{}_itol.txt'.format(id))
         if os.path.exists(itol_id_file):
-            with open(os.path.exists(itol_id_file), 'r') as f:
+            with open(itol_id_file, 'r') as f:
                 context['itol'] = f.readline().strip('\n')
 
         if not os.path.exists(analysis.html_compressed.replace('{}.compressed.html'.format(analysis.id),

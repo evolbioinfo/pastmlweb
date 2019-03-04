@@ -104,8 +104,8 @@ def apply_pastml(id, data, tree, data_sep, id_index, columns, date_column, model
         itol_id = None
         itol_id_file = os.path.join(work_dir, 'iTOL_id.txt')
         if os.path.exists(itol_id_file):
-            with open(os.path.exists(itol_id_file), 'r') as f:
-                itol_id = f.readline()
+            with open(itol_id_file, 'r') as f:
+                itol_id = f.readline().strip('\n')
             copyfile(itol_id_file, os.path.join(work_dir, '..', 'pastml_{}_itol.txt'.format(id)))
         shutil.make_archive(os.path.join(work_dir, '..', 'pastml_{}'.format(id)), 'zip', work_dir)
         try:
