@@ -105,7 +105,8 @@ class AnalysisForm(ModelForm):
 
         self.fields['character_column(s)' if multi_column else 'character_column'] = \
             MultiSelectFormField(choices=self.column_choices, max_choices=6, min_choices=1,
-                                 help_text=u'Column(s) whose ancestral states are to be reconstructed (to select multiple columns keep Shift pressed).',
+                                 help_text=u'Column(s) whose ancestral states are to be reconstructed '
+                                           u'(to select multiple columns keep Shift pressed).',
                                  widget=widgets.SelectMultiple) \
                 if multi_column else \
                 forms.ChoiceField(required=True, choices=self.column_choices,

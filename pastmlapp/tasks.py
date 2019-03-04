@@ -1,3 +1,5 @@
+from shutil import copyfile
+
 from celery.task import task
 from celery.utils.log import get_task_logger
 from django.urls import reverse
@@ -17,7 +19,7 @@ def send_feedback_email(email, message):
 
 
 @task(name="send_analysis_email")
-def send_analysis_email(email, url, id, title, columns, model, prediction_method, error=None):
+def send_analysis_email(email, url, id, title, columns, model, prediction_method, itol_url, error=None):
     """sends an email when PastML analysis is finished"""
     logger.info("Sent analysis is ready email")
     from django.core.mail import EmailMessage
@@ -30,7 +32,7 @@ def send_analysis_email(email, url, id, title, columns, model, prediction_method
     if not error:
         body = """Dear PastML user,
 
-You PastML ancestral scenario reconstruction is now ready and available at {url}.
+You PastML ancestral scenario reconstruction is now ready and available at {url}. {itol}
 We reconstructed ancestral characters with {method} for {columns}.
 
 If you want to know more about PastML ancestral character reconstruction and visualisation algorithms please have a look at our help page: {help}.
@@ -46,12 +48,13 @@ Evolutionary Bioinformatics
 C3BI, USR 3756 IP CNRS
 Paris, France
 """.format(url=result_url, help=help_url, feedback=feedback_url, columns=', '.join(columns),
-           method='{} (model {})'.format(prediction_method, model) if is_ml(prediction_method) else prediction_method)
+           method='{} (model {})'.format(prediction_method, model) if is_ml(prediction_method) else prediction_method,
+           itol='The full tree visualisation is also available on iTOL: {}.'.format(itol_url) if itol_url else '')
 
     else:
         body = """Dear PastML user,
 
-Unfortunately we did not manage to reconstruct the ancestral scenario for your data, you might see more details at {url}.
+Unfortunately we did not manage to reconstruct the ancestral scenario for your data (see {url}{itol}).
 We tried to perform ancestral character reconstruction with {method} for {columns}, but got the following error:
 "{error}"
 
@@ -69,7 +72,8 @@ C3BI, USR 3756 IP CNRS
 Paris, France
 """.format(url=result_url, help=help_url, feedback=feedback_url, columns=', '.join(columns),
                method='{} (model {})'.format(prediction_method, model) if is_ml(
-                   prediction_method) else prediction_method, error=error)
+                   prediction_method) else prediction_method, error=error,
+           itol=', {}'.format(itol_url) if itol_url else '')
 
     email = EmailMessage(subject='Your PastML analysis is ready' if not title else title,
                          body=body,
@@ -93,20 +97,29 @@ def apply_pastml(id, data, tree, data_sep, id_index, columns, date_column, model
         pastml_pipeline(tree=tree, data=data, data_sep=data_sep, id_index=id_index, columns=columns,
                         date_column=date_column if date_column else None,
                         model=model, prediction_method=prediction_method, name_column=name_column,
-                        html_compressed=html_compressed, html=html, verbose=True, work_dir=work_dir)
+                        html_compressed=html_compressed, html=html, verbose=True, work_dir=work_dir,
+                        upload_to_itol=True, itol_id='ZxuhG2okfKLQnsgd5xAEGQ', itol_project='pastmlweb',
+                        itol_tree_name=id)
+        itol_url = None
+        itol_url_file = os.path.join(work_dir, 'iTOL_url.txt')
+        if os.path.exists(itol_url_file):
+            with open(os.path.exists(itol_url_file), 'r') as f:
+                itol_url = f.readline()
+            copyfile(itol_url_file, os.path.join(work_dir, '..', 'pastml_{}_itol.url'.format(id)))
         shutil.make_archive(os.path.join(work_dir, '..', 'pastml_{}'.format(id)), 'zip', work_dir)
         try:
             shutil.rmtree(work_dir)
         except:
             pass
         if email:
-            send_analysis_email.delay(email, url, id, title, columns, model, prediction_method, None)
+            send_analysis_email.delay(email, url, id, title, columns, model, prediction_method, itol_url, None)
     except Exception as e:
         e_str = str(e)
         with open(html_compressed, 'w+') as f:
             f.write('<p>Could not reconstruct the states...<br/>{}</p>'.format(e_str))
         if email:
-            send_analysis_email.delay(email, url, id, title, columns, model, prediction_method, e_str)
+            send_analysis_email.delay(email, url, id, title, columns, model, prediction_method, itol_url, e_str)
         else:
-            send_analysis_email.delay('anna.zhukova@pasteur.fr', url, id, title, columns, model, prediction_method, e_str)
+            send_analysis_email.delay('anna.zhukova@pasteur.fr', url, id, title, columns, model, prediction_method,
+                                      itol_url, e_str)
         raise e

@@ -29,6 +29,11 @@ def detail(request, id):
         context = {'id': id, 'model': analysis.model if is_ml(analysis.prediction_method) else None,
                    'prediction_method': analysis.prediction_method,
                    'columns': ', '.join(columns)}
+        itol_url_file = os.path.join(os.path.dirname(analysis.html_compressed), 'pastml_{}_itol.url'.format(id))
+        if os.path.exists(itol_url_file):
+            with open(os.path.exists(itol_url_file), 'r') as f:
+                context['itol'] = f.readline()
+
         if not os.path.exists(analysis.html_compressed.replace('{}.compressed.html'.format(analysis.id),
                                                                'pastml_{}.zip'.format(analysis.id))):
             context['rec_error'] = True
