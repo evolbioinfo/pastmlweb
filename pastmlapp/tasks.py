@@ -50,7 +50,7 @@ C3BI, USR 3756 IP CNRS
 Paris, France
 """.format(url=result_url, help=help_url, feedback=feedback_url, columns=', '.join(columns),
            method='{} (model {})'.format(prediction_method, model) if is_ml(prediction_method) else prediction_method,
-           itol='The full tree visualisation is also available on iTOL: {}.'.format(itol_url) if itol_url else '')
+           itol='The full tree visualisation is also available at iTOL: {} (do not forget to turn on the annotations on top right).'.format(itol_url) if itol_url else '')
 
     else:
         body = """Dear PastML user,
