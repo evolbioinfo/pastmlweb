@@ -19,7 +19,7 @@ def send_feedback_email(email, message):
 
 
 @task(name="send_analysis_email")
-def send_analysis_email(email, url, id, title, columns, model, prediction_method, itol_url, error=None):
+def send_analysis_email(email, url, id, title, columns, model, prediction_method, itol_id, error=None):
     """sends an email when PastML analysis is finished"""
     logger.info("Sent analysis is ready email")
     from django.core.mail import EmailMessage
@@ -28,6 +28,7 @@ def send_analysis_email(email, url, id, title, columns, model, prediction_method
     result_url = 'http://{}{}'.format(url, reverse('pastmlapp:detail', args=(id,)))
     help_url = 'http://{}{}'.format(url, reverse('pastmlapp:help'))
     feedback_url = 'http://{}{}'.format(url, reverse('pastmlapp:feedback'))
+    itol_url = 'http://itol.embl.de/external.cgi?tree={}'.format(itol_id) if itol_id else None
 
     if not error:
         body = """Dear PastML user,
@@ -100,26 +101,26 @@ def apply_pastml(id, data, tree, data_sep, id_index, columns, date_column, model
                         html_compressed=html_compressed, html=html, verbose=True, work_dir=work_dir,
                         upload_to_itol=True, itol_id='ZxuhG2okfKLQnsgd5xAEGQ', itol_project='pastmlweb',
                         itol_tree_name=id)
-        itol_url = None
-        itol_url_file = os.path.join(work_dir, 'iTOL_url.txt')
-        if os.path.exists(itol_url_file):
-            with open(os.path.exists(itol_url_file), 'r') as f:
-                itol_url = f.readline()
-            copyfile(itol_url_file, os.path.join(work_dir, '..', 'pastml_{}_itol.url'.format(id)))
+        itol_id = None
+        itol_id_file = os.path.join(work_dir, 'iTOL_id.txt')
+        if os.path.exists(itol_id_file):
+            with open(os.path.exists(itol_id_file), 'r') as f:
+                itol_id = f.readline()
+            copyfile(itol_id_file, os.path.join(work_dir, '..', 'pastml_{}_itol.txt'.format(id)))
         shutil.make_archive(os.path.join(work_dir, '..', 'pastml_{}'.format(id)), 'zip', work_dir)
         try:
             shutil.rmtree(work_dir)
         except:
             pass
         if email:
-            send_analysis_email.delay(email, url, id, title, columns, model, prediction_method, itol_url, None)
+            send_analysis_email.delay(email, url, id, title, columns, model, prediction_method, itol_id, None)
     except Exception as e:
         e_str = str(e)
         with open(html_compressed, 'w+') as f:
             f.write('<p>Could not reconstruct the states...<br/>{}</p>'.format(e_str))
         if email:
-            send_analysis_email.delay(email, url, id, title, columns, model, prediction_method, itol_url, e_str)
+            send_analysis_email.delay(email, url, id, title, columns, model, prediction_method, itol_id, e_str)
         else:
             send_analysis_email.delay('anna.zhukova@pasteur.fr', url, id, title, columns, model, prediction_method,
-                                      itol_url, e_str)
+                                      itol_id, e_str)
         raise e
