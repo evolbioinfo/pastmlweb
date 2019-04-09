@@ -119,8 +119,8 @@ def apply_pastml(id, data, tree, data_sep, id_index, columns, date_column, model
         with open(html_compressed, 'w+') as f:
             f.write('<p>Could not reconstruct the states...<br/>{}</p>'.format(e_str))
         if email:
-            send_analysis_email.delay(email, url, id, title, columns, model, prediction_method, itol_id, e_str)
+            send_analysis_email.delay(email, url, id, title, columns, model, prediction_method, None, e_str)
         else:
             send_analysis_email.delay('anna.zhukova@pasteur.fr', url, id, title, columns, model, prediction_method,
-                                      itol_id, e_str)
+                                      None, e_str)
         raise e
