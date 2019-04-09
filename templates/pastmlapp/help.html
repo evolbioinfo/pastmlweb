@@ -27,20 +27,20 @@
     Its first line must contain a <b>header</b>, specifying column names. One of the columns must contain the <b>tip
         ids</b> (in the same format as used in the tree),
     and there must be at least one (or more) column(s) containing <b>tip states</b> for character(s) whose ancestral
-    states are to be reconstructed with PastML.</p>
-<p>
-    The characters to be analysed with PastML should be discrete, e.g. countries, presence/absence of a mutation, nucleotide value at a certain position, etc.
-</p>
-<p>If the annotation table contains tip sampling dates, this information can be used to produce a timeline as explained
-    <a href="#timeline">after</a>. However, this is optional.</p>
-<p>The table may contain other columns that will not be used in PastML analysis.</p>
-<p>You will be asked to specify which of your table columns contains what, once you've uploaded the tree and the
+    states are to be reconstructed with PastML. The characters to be analysed with PastML should be discrete,
+    e.g. countries, presence/absence of a mutation, nucleotide value at a certain position, etc.
+    If the annotation table contains <b>tip sampling dates</b>, this information can be used to produce a timeline as explained
+    <a href="#timeline">after</a>. However, this is optional. The table may contain other columns that will not be used in PastML analysis.
+    You will be asked to specify which of your table columns contains what, once you've uploaded the tree and the
     table.</p>
-<p>If a state of a certain tip is not known, it can be either omitted from the table or left blank. It will be estimated
-    during PastML analysis. To restrict a tip state to several possibilities (e.g. UK or France) add multiple columns with this tip id in the annotation file, each containing a possible state (e.g. one columns for UK, and one for France)</p>
-<p>If states of some of the internal nodes are known, one can specify them in the same manner as tip states, but note that the input tree in that case should contain internal node names.</p>
+<p>If a state of a certain tip is <b>unknown</b>, it can be either omitted from the table or left blank. It will be estimated
+    during PastML analysis. To restrict a tip state to <b>several possibilities</b> (e.g. UK or France) add multiple columns with this tip id in the annotation file,
+    each containing a possible state (e.g. one columns for UK, and one for France).
+    If states of some of the internal nodes are known, they can be specified in the same manner as tip states,
+    but note that the input tree in that case should contain internal node names.</p>
 
-    <p>For example, in a data set with the tree <i>((t1:0.2,t2:0.4)n1:0.9,(t3:0.2,t4:0.6)n2:0.3)root;</i> containing four tips: t1, t2, t3, t4, and the following annotation table:
+    <h6>Example</h6>
+    <p>Let's look at a toy data set with a four-tip tree <i>((t1:0.2,t2:0.4)n1:0.9,(t3:0.2,t4:0.6)n2:0.3)root;</i> (in newick format, with internal nodes named), and the following annotation table:</p>
 <table style="width:100%">
   <tr>
     <th>ID</th>
@@ -85,11 +85,11 @@
     <td></td>
   </tr>
 </table>
-
+<p>
 Column <i>ID</i> contains tree node ids, columns <i>Country</i> and <i>Continent</i> can be used for ancestral character reconstruction by PastML, column <i>Sampling date</i> contains tip dates that can be used to visualise a <a href="#timeline">timeline</a>,
     and column <i>Other data</i> seems to contain continuous data that cannot be analysed with PastML.
-    Tip t1 is annotated with <i>Country:China</i> and <i>Continent:Asia</i>, tip t2 with <i>Country:UK or France</i> and <i>Continent:Europe</i>, for tip t3 Country is unknown, but it is annotated with <i>Continent:Asia</i>, for the internal node n1 Continent is unknown, but Country is fixed to UK,
-    while for the other nodes (tip t4, internal node n2, and root) their locations are unknown and can be inferred by PastML.
+    Tip t1 is annotated with <i>Country:China</i> and <i>Continent:Asia</i>, tip t2 with <i>Country:UK or France</i> and <i>Continent:Europe</i>, for tip t3 Country is unknown (and will be inferred by PastML), but it is annotated with <i>Continent:Asia</i>,
+    finally for the internal node n1 Continent is unknown, but Country is fixed to UK. For the other nodes (tip t4, internal node n2, and root) their locations are unknown and can be inferred by PastML.
 </p>
 
 
@@ -123,17 +123,17 @@ Column <i>ID</i> contains tree node ids, columns <i>Country</i> and <i>Continent
     [<a href="https://www.ncbi.nlm.nih.gov/pubmed/9071022" target="_blank">Zhang and Nei, 1997</a>,
     <a href="https://doi.org/10.1093/sysbio/syu010" target="_blank">Gascuel and Steel, 2014</a>], at least in the
     absence of model violation.
-    We provide three ML methods: maximum a posteriori (MAP), joint, and marginal posterior probabilities approximation (MPPA, <i>recommended</i>).</p>
-<h4 id="map">MAP</h4>
+    We provide three ML methods: maximum a posteriori (MAP), Joint, and marginal posterior probabilities approximation (MPPA, <i>recommended</i>).</p>
+<h4 id="map">MAP (maximum a posteriori)</h4>
 <p>MAP computes the marginal posterior probabilities of every state for each of the tree nodes,
     based on the information from the whole tree, i.e. tip states and branch lengths (obtained via two tree traversals:
     bottom-up, and then top-down). MAP then chooses a state with the highest posterior probability for each node, independently from one node to another.
     This could induce globally inconsistent scenarios (typically: two very close nodes with incompatible
     predictions).</p>
 <h4 id="joint">JOINT</h4>
-<p>While MAP chooses predicted states based on all possible scenarios, joint method <a href="https://doi.org/10.1093/oxfordjournals.molbev.a026369" target="_blank">[Pupko <i>et al.</i>,
+<p>While MAP chooses predicted states based on all possible scenarios, Joint method <a href="https://doi.org/10.1093/oxfordjournals.molbev.a026369" target="_blank">[Pupko <i>et al.</i>,
     2000]</a> reconstructs the states of the scenario with the highest likelihood.</p>
-<h4 id="mppa">MPPA <i>(recommended)</i></h4>
+<h4 id="mppa">MPPA (marginal posterior probabilities approximation, <i>recommended</i>)</h4>
 <p>MAP and Joint methods choose one state per node and do not reflect the fact that with real data and large trees,
     billions of scenarios may have similar posterior probabilities.
     Based on the marginal posterior probabilities, MPPA chooses for every node a subset of likely states that minimizes the prediction error measured by the <a href="https://en.wikipedia.org/wiki/Brier_score" target="_blank">Brier
@@ -148,7 +148,7 @@ Column <i>ID</i> contains tree node ids, columns <i>Country</i> and <i>Continent
 <h5 id="f81">F81 <i>(recommended)</i></h5>
 <p>With F81 model <a href="https://doi.org/10.1007/BF01734359" target="_blank">[Felsenstein, 1981]</a>, the rate of changes from i to j (i ≠ j) is proportional to the equilibrium frequency of j. The
     equilibrium frequencies are optimised.
-<h5 id="eft">EFT</h5>
+<h5 id="eft">EFT (estimate-from-tips)</h5>
 <p>With EFT model, the equilibrium frequencies are calculated based on the tip state proportions, the rate of changes
     from i to j (i ≠ j) is proportional to the equilibrium frequency of j.</p>
 
