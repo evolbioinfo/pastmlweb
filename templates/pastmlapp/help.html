@@ -16,7 +16,7 @@
     <a href="https://sco.h-its.org/exelixis/web/software/raxml/index.html" target="_blank">RAxML</a>,
     <a href="http://www.microbesonline.org/fasttree/" target="_blank">FastTree</a>,
     <a href="http://www.iqtree.org/" target="_blank">IQTree</a>, or
-    <a href="http://www.beast2.org/" target="_blank">Beast2</a>. Once inferred the tree should be rooted
+    <a href="http://www.beast2.org/" target="_blank">Beast2</a>. Once inferred the tree must be rooted
     (with an outgroup or with dates, e.g. using <a href="https://github.com/fredericlemoine/gotree" target="_blank">gotree</a>
     or <a href="https://github.com/tothuhien/lsd-0.3beta" target="_blank">LSD</a>, etc.) The tree can (but does not have
     to) be dated.</p>
@@ -24,18 +24,74 @@
 <h3 id="table">Annotation table</h3>
 <p>The annotation table should be in <a href="https://en.wikipedia.org/wiki/Comma-separated_values"
                                         target="_blank">CSV</a> format (with your favourite separator character).
-    Its first line should contain a <b>header</b>, specifying column names. One of the columns should contain the <b>tip
+    Its first line must contain a <b>header</b>, specifying column names. One of the columns must contain the <b>tip
         ids</b> (in the same format as used in the tree),
-    and there should be at least one (or more) column(s) containing <b>tip states</b> for a character whose ancestral
-    states are to be reconstructed with PastML.
+    and there must be at least one (or more) column(s) containing <b>tip states</b> for character(s) whose ancestral
+    states are to be reconstructed with PastML.</p>
+<p>
+    The characters to be analysed with PastML should be discrete, e.g. countries, presence/absence of a mutation, nucleotide value at a certain position, etc.
 </p>
 <p>If the annotation table contains tip sampling dates, this information can be used to produce a timeline as explained
     <a href="#timeline">after</a>. However, this is optional.</p>
-<p>The table can contain other columns that will not be used in PastML analysis.</p>
+<p>The table may contain other columns that will not be used in PastML analysis.</p>
 <p>You will be asked to specify which of your table columns contains what, once you've uploaded the tree and the
     table.</p>
 <p>If a state of a certain tip is not known, it can be either omitted from the table or left blank. It will be estimated
-    during PastML analysis.</p>
+    during PastML analysis. To restrict a tip state to several possibilities (e.g. UK or France) add multiple columns with this tip id in the annotation file, each containing a possible state (e.g. one columns for UK, and one for France)</p>
+<p>If states of some of the internal nodes are known, one can specify them in the same manner as tip states, but note that the input tree in that case should contain internal node names.</p>
+
+    <p>For example, in a data set with the tree <i>((t1:0.2,t2:0.4)n1:0.9,(t3:0.2,t4:0.6)n2:0.3)root;</i> containing four tips: t1, t2, t3, t4, and the following annotation table:
+<table style="width:100%">
+  <tr>
+    <th>ID</th>
+    <th>Country</th>
+    <th>Continent</th>
+    <th>Sampling date</th>
+    <th>Other data</th>
+  </tr>
+  <tr>
+    <td>t1</td>
+    <td>China</td>
+    <td>Asia</td>
+    <td>2016-02-21</td>
+    <td>4.37</td>
+  </tr>
+  <tr>
+    <td>t2</td>
+    <td>UK</td>
+    <td>Europe</td>
+    <td>2018-04-12</td>
+    <td>1.23</td>
+  </tr>
+  <tr>
+    <td>t2</td>
+    <td>France</td>
+    <td>Europe</td>
+    <td>2018-04-12</td>
+    <td>1.23</td>
+  </tr>
+  <tr>
+    <td>t3</td>
+    <td></td>
+    <td>Asia</td>
+    <td>2010-03-01</td>
+    <td>3.25</td>
+  </tr>
+  <tr>
+    <td>n1</td>
+    <td>UK</td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+</table>
+
+Column <i>ID</i> contains tree node ids, columns <i>Country</i> and <i>Continent</i> can be used for ancestral character reconstruction by PastML, column <i>Sampling date</i> contains tip dates that can be used to visualise a <a href="#timeline">timeline</a>,
+    and column <i>Other data</i> seems to contain continuous data that cannot be analysed with PastML.
+    Tip t1 is annotated with <i>Country:China</i> and <i>Continent:Asia</i>, tip t2 with <i>Country:UK or France</i> and <i>Continent:Europe</i>, for tip t3 Country is unknown, but it is annotated with <i>Continent:Asia</i>, for the internal node n1 Continent is unknown, but Country is fixed to UK,
+    while for the other nodes (tip t4, internal node n2, and root) their locations are unknown and can be inferred by PastML.
+</p>
+
 
 <h2 id="acr">Ancestral character reconstruction (ACR)</h2>
 <img src="/static/img/acr.png" class="center" style="height:250px;"/>
@@ -66,26 +122,22 @@
     standpoint, ML methods have some optimality guaranty
     [<a href="https://www.ncbi.nlm.nih.gov/pubmed/9071022" target="_blank">Zhang and Nei, 1997</a>,
     <a href="https://doi.org/10.1093/sysbio/syu010" target="_blank">Gascuel and Steel, 2014</a>], at least in the
-    absence of model violation.</p>
-<p>ML methods compute the marginal posterior probabilities of every state for each of the tree nodes,
-    based on the information from the whole tree, i.e. tip states and branch lengths (obtained via two tree traversals:
-    bottom-up, and then top-down).
-    Then, the state selection is performed for each node based on the calculated probabilities.
-    We provide three methods: maximum a posteriori (MAP), joint, and marginal posterior probabilities approximation (MPPA, <i>recommended</i>).</p>
+    absence of model violation.
+    We provide three ML methods: maximum a posteriori (MAP), joint, and marginal posterior probabilities approximation (MPPA, <i>recommended</i>).</p>
 <h4 id="map">MAP</h4>
-<p>MAP chooses a state with the highest posterior probability for each node, independently from one node to another.
+<p>MAP computes the marginal posterior probabilities of every state for each of the tree nodes,
+    based on the information from the whole tree, i.e. tip states and branch lengths (obtained via two tree traversals:
+    bottom-up, and then top-down). MAP then chooses a state with the highest posterior probability for each node, independently from one node to another.
     This could induce globally inconsistent scenarios (typically: two very close nodes with incompatible
     predictions).</p>
 <h4 id="joint">JOINT</h4>
-<p>The joint method <a href="https://doi.org/10.1093/oxfordjournals.molbev.a026369" target="_blank">[Pupko <i>et al.</i>,
-    2000]</a> chooses a root state with the highest posterior probability, and then computes the rest of the
-    states in a consistent way, going top-down.</p>
-<h4 id="mppa">MPPA</h4>
+<p>While MAP chooses predicted states based on all possible scenarios, joint method <a href="https://doi.org/10.1093/oxfordjournals.molbev.a026369" target="_blank">[Pupko <i>et al.</i>,
+    2000]</a> reconstructs the states of the scenario with the highest likelihood.</p>
+<h4 id="mppa">MPPA <i>(recommended)</i></h4>
 <p>MAP and Joint methods choose one state per node and do not reflect the fact that with real data and large trees,
     billions of scenarios may have similar posterior probabilities.
-    MPPA calculates for every node a subset of likely states that minimizes the prediction error measured by the Brier
-    score.
-    It therefore sometimes keeps multiple state predictions per node but only when they have similar and high
+    Based on the marginal posterior probabilities, MPPA chooses for every node a subset of likely states that minimizes the prediction error measured by the <a href="https://en.wikipedia.org/wiki/Brier_score" target="_blank">Brier
+        score</a>.It therefore sometimes keeps multiple state predictions per node but only when they have similar and high
     probabilities.</p>
 
 <h4 id="models">Character evolution models</h4>
@@ -93,7 +145,7 @@
     calculated: JC, F81 <i>(recommended)</i>, and EFT (estimate-from-tips, <i>not recommended</i>).</p>
 <h5 id="jc">JC</h5>
 <p>With JC model <a href="http://dx.doi.org/10.1016/B978-1-4832-3211-9.50009-7" target="_blank">[Jukes and Cantor, 1969]</a> all frequencies, and therefore rates of changes from state i to state j (i ≠ j) are equal.</p>
-<h5 id="f81">F81</h5>
+<h5 id="f81">F81 <i>(recommended)</i></h5>
 <p>With F81 model <a href="https://doi.org/10.1007/BF01734359" target="_blank">[Felsenstein, 1981]</a>, the rate of changes from i to j (i ≠ j) is proportional to the equilibrium frequency of j. The
     equilibrium frequencies are optimised.
 <h5 id="eft">EFT</h5>
@@ -102,72 +154,77 @@
 
 <h2 id="visualisation">Visualisation</h2>
 <img src="/static/img/visualisation.png" class="center" style="height:300px;"/>
-<p>Once the ACR is performed, we visualise a compressed representation of the ancestral scenarios, which highlights the
+    <p>Once the ACR is performed, we visualise a compressed representation of the ancestral scenarios, which highlights the
     main facts and hides minor details.
     This representation is calculated in two steps: (i) <i>vertical merge</i> that clusters together the parts of the
     tree where no state change happens,
     and (ii) <i>horizontal merge</i> that clusters independent events of the same kind. For large trees two additional
-    steps might be applied: <i>relaxed merge</i> and <i>trimming</i>.</p>
+    steps might be applied: <i>relaxed merge and trimming</i>.</p>
 <h3 id="vertical-merge">Vertical merge</h3>
-<p>While there exists a parent-child couple such that the parent’s set of predicted states is the same as the child’s
+    <p>While there exists a parent-child couple such that the parent’s set of predicted states is the same as the child’s
     one, we merge them.
     Once done, we compute the size of so-obtained clusters as the number of tips of the initial tree contained in them.
     Accordingly, in the initial tree each tip has a size of 1, each internal node has a size of 0, and when merging two
     nodes we sum their sizes.</p>
 <h3 id="horizontal-merge">Horizontal merge</h3>
-<p>Starting at the root and going top-down towards the tips, at each node we compare its child subtrees.
+    <p>Starting at the root and going top-down towards the tips, at each node we compare its child subtrees.
     If two or more identical subtrees are found, we keep just one representative and assign their number to the size of
     the branch
     that connects the kept subtree to the current node. Hence a branch size corresponds to the number of times its
     subtree is found in the initial tree.
     Before the horizontal merge all branches have size 1.</p>
-<p>
-    Two trees are considered <i>identical</i> if they have the same topology and their corresponding nodes have the same
+
+    <p>Two trees are considered <i>identical</i> if they have the same topology and their corresponding nodes have the same
     state(s) and sizes.
     For example, two trees are identical if they are both cherries (a parent node with two tip children) with a parent
     in state A of size 3,
     a child in state B of size 2, and the other child in state C of size 1.
     However, those trees will not be identical to any non-cherry tree, or to a cherry with a parent not in state A, or
     to a cherry with the B-child of size 6, etc.</p>
-<h3 is="relaxed-merge">Relaxed merge</h3>
-<p>For large trees with many state changes even after the compression the visualization might contain too many details.
-    To address this issue, we relax the definition of identical trees for the horizontal merge:
-    instead of requiring identical sizes of the corresponding nodes, we allow for nodes of sizes of the same order
-    (log10);
-    for instance, now a node in state A of size 3 can correspond to a node in state A of any size between 1 and 9,
-    and a node in state B of size 25 can correspond to a node in state B of any size between 10 and 99.
-</p>
-<h3 id="trimming">Trimming</h3>
-<p>If even after a relaxed horizontal merge the compressed representation contains too many details,
-    we remove minor ones using the following procedure.
-    For each leaf node we calculate its importance by multiplying its size by the size of its branch;
-    for instance, a leaf of size 2 with a branch of size 3 gets an importance of 6.
-    We then set the cut-off threshold to the 15-th largest node importance,
-    and iteratively remove all leafs with smaller importance.
-    Finally, we rerun horizontal merge as some of the previously different topologies might become identical after
-    trimming.</p>
+<h3 is="relaxed-merge">Relaxed merge and trimming</h3>
+    <p>For large trees with many state changes even after the compression the visualization might contain too many details.
+        To address this issue, we limit the number of tips shown in the compressed tree to about 15,
+        which is achieved by performing a relaxed horizontal merge and hiding less important nodes.</p>
+
+    <p>In a <i>relaxed horizontal merge</i>, the definition of identical trees for the horizontal merge is updated:
+        instead of requiring identical sizes of the corresponding nodes,
+        we allow for nodes of sizes of the same order (log10);
+        for instance, now a node in state A of size 3 can correspond to a node in state A of any size between 1 and 9,
+        and a node in state B of size 25 can correspond to a node in state B of any size between 10 and 99.</p>
+
+    <p>If even after a relaxed horizontal merge the compressed representation contains too many details,
+        we <i>trim</i> less important tips as follows. For each node we calculate its importance by multiplying its size
+        by the sizes of all the branches on the path to the root of its branch,
+        therefore obtaining the number of tips of the original tree that are represented by this node;
+        for instance, a node leaf of size 2 connected to the root via branches of sizes 1, 3, and 5 gets an importance of 30.
+        We call a node blocked by its descendant if its importance is smaller than the descendant’s one.
+        The intuition behind is that this node cannot be removed from the tree unless the importance threshold allows to remove its descendant first.
+        We then set the cut-off threshold to the 15-th largest non-blocked node’s importance, and iteratively trim all tips with smaller importance
+        (once a tip is removed its parent becomes an unblocked tip itself and is also considered for trimming).
+        Finally, we rerun relaxed horizontal merge as some of the previously different topologies might have become identical after trimming.</p>
 
 <h2 id="multiple-column-acr">Multiple column analysis</h2>
 <img src="/static/img/multistate.png" class="center" style="height:900px;"/>
 <p>When multiple columns are selected for ACR analysis,
-    we ACR independently to each character to obtain its ancestral states,
+    we apply ACR independently to each character to obtain its ancestral states,
     and visualize each character on the tree nodes as sectors.
     If we could not choose a unique state for a character, we keep the corresponding sector uncolored (i.e. white).
     Once the tree is colored and each node is assigned its combined states (pie of colors),
     we compress the tree as described in the previous section.</p>
 
 <h2 id="timeline">Timeline</h2>
-<p>When sampling dates column is specified,
-    we visualize a timeline: For each year between the year of the first sampled tip and the year of the last sampled
-    one,
-    we prune the tree to remove the tips sampled after this year, and add a slider to the visualization,
-    allowing to navigate in time.</p>
+<p>When a column containing tips sampling dates is specified, we visualize a timeline:
+    we split the time between the year of the the oldest and the most recent samples into five intervals,
+    and add a slider to the visualization, allowing to navigate in time.
+    At each milestone we hide the subtrees whose all tips were sampled after.
+    When sampling dates are not available, we provide a timeline based on tip-to-root distances instead.
+</p>
 
 
 <h2 id="itol">Full tree visualisation with <a href="https://itol.embl.de/" target="_blank">iTOL</a></h2>
-<p>You can also view the ACR on the full tree via iTOL.
-    We generate iTOL annotation files that allow to colour tree edges by state and to show pop-ups with the ACR-related information,
-    and automaticaly upload them and the tree to iTOL (the link is provided at the top of the visualisation page).
+<p>To permit viewing of the ACR on the full tree via iTOL,
+    we generate iTOL annotation files that allow to colour tree edges by state and to show pop-ups with the ACR-related information,
+    and automatically upload them and the tree to iTOL (the link is provided at the top of the visualisation page).
     The tree visualisation itself is created by <a href="https://itol.embl.de/about.cgi" target="_blank">iTOL</a>.</p>
 </div>
 
