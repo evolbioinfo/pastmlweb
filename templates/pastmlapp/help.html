@@ -124,8 +124,8 @@ Column <i>ID</i> contains tree node ids, columns <i>Country</i> and <i>Continent
     <a href="https://doi.org/10.1093/sysbio/syu010" target="_blank">Gascuel and Steel, 2014</a>], at least in the
     absence of model violation.
     We provide three ML methods: maximum a posteriori (MAP), Joint, and marginal posterior probabilities approximation (MPPA, <i>recommended</i>).</p>
-<h4 id="map">MAP (maximum a posteriori)</h4>
-<p>MAP computes the marginal posterior probabilities of every state for each of the tree nodes,
+<h4 id="map">MAP</h4>
+<p>MAP (maximum a posteriori) computes the marginal posterior probabilities of every state for each of the tree nodes,
     based on the information from the whole tree, i.e. tip states and branch lengths (obtained via two tree traversals:
     bottom-up, and then top-down). MAP then chooses a state with the highest posterior probability for each node, independently from one node to another.
     This could induce globally inconsistent scenarios (typically: two very close nodes with incompatible
@@ -133,10 +133,11 @@ Column <i>ID</i> contains tree node ids, columns <i>Country</i> and <i>Continent
 <h4 id="joint">JOINT</h4>
 <p>While MAP chooses predicted states based on all possible scenarios, Joint method <a href="https://doi.org/10.1093/oxfordjournals.molbev.a026369" target="_blank">[Pupko <i>et al.</i>,
     2000]</a> reconstructs the states of the scenario with the highest likelihood.</p>
-<h4 id="mppa">MPPA (marginal posterior probabilities approximation, <i>recommended</i>)</h4>
+<h4 id="mppa">MPPA <i>(recommended)</i></h4>
 <p>MAP and Joint methods choose one state per node and do not reflect the fact that with real data and large trees,
     billions of scenarios may have similar posterior probabilities.
-    Based on the marginal posterior probabilities, MPPA chooses for every node a subset of likely states that minimizes the prediction error measured by the <a href="https://en.wikipedia.org/wiki/Brier_score" target="_blank">Brier
+    Based on the marginal posterior probabilities, MPPA (marginal posterior probabilities approximation)
+    chooses for every node a subset of likely states that minimizes the prediction error measured by the <a href="https://en.wikipedia.org/wiki/Brier_score" target="_blank">Brier
         score</a>.It therefore sometimes keeps multiple state predictions per node but only when they have similar and high
     probabilities.</p>
 
@@ -148,8 +149,8 @@ Column <i>ID</i> contains tree node ids, columns <i>Country</i> and <i>Continent
 <h5 id="f81">F81 <i>(recommended)</i></h5>
 <p>With F81 model <a href="https://doi.org/10.1007/BF01734359" target="_blank">[Felsenstein, 1981]</a>, the rate of changes from i to j (i ≠ j) is proportional to the equilibrium frequency of j. The
     equilibrium frequencies are optimised.
-<h5 id="eft">EFT (estimate-from-tips)</h5>
-<p>With EFT model, the equilibrium frequencies are calculated based on the tip state proportions, the rate of changes
+<h5 id="eft">EFT</h5>
+<p>With EFT (estimate-from-tips) model, the equilibrium frequencies are calculated based on the tip state proportions, the rate of changes
     from i to j (i ≠ j) is proportional to the equilibrium frequency of j.</p>
 
 <h2 id="visualisation">Visualisation</h2>
