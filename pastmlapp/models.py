@@ -31,13 +31,14 @@ class TreeData(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     tree = models.FileField(upload_to='',
-                            help_text=u'A rooted tree (in <a href=https://en.wikipedia.org/wiki/Newick_format '
+                            help_text=u'A <b>rooted</b> tree (in <a href=https://en.wikipedia.org/wiki/Newick_format '
                                       u'target=_blank>Newick</a> format).')
 
     data = models.FileField(upload_to='',
                             help_text=u'An annotation table specifying tip states '
                                       u'(in <a href="https://en.wikipedia.org/wiki/Comma-separated_values" '
-                                      u'target="_blank">CSV</a> format).')
+                                      u'target="_blank">CSV</a> format). '
+                                      u'You will be asked to choose columns of interest at the next step.')
     data_sep = models.CharField(max_length=8, default='<tab>', blank=True, null=True,
                                 help_text=u'Separator for the annotation table (default is "&lt;tab&gt;", '
                                           u'for a comma-separated file put ",").')

@@ -99,7 +99,7 @@ class AnalysisForm(ModelForm):
                                     for _ in pd.read_table(td.data.path, sep=td.data_sep, header=0).columns)
 
         self.fields['tip_id_column'] = forms.ChoiceField(required=True, choices=self.column_choices,
-                                                         help_text=u'Column containing tip ids.')
+                                                         help_text=u'Column containing tip ids (in the same format as in the tree).')
 
         multi_column = len(self.column_choices) > 2
 
