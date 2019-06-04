@@ -36,7 +36,9 @@ def send_analysis_email(email, url, id, title, columns, model, prediction_method
 You PastML ancestral scenario reconstruction is now ready and available at {url}. {itol}
 We reconstructed ancestral characters with {method} for {columns}.
 
-If you want to know more about PastML ancestral character reconstruction and visualisation algorithms please have a look at our help page: {help}.
+If you want to know more about PastML ancestral character reconstruction and visualisation algorithms please have a look at our help page: {help}, 
+or check out the article: Ishikawa SA, Zhukova A, Iwasaki W, Gascuel O, A Fast Likelihood Method to Reconstruct and Visualize Ancestral Scenarios, Molecular Biology and Evolution, msz131 (https://doi.org/10.1093/molbev/msz131).
+
 
 If you have experienced any problem or have suggestions on how to improve PastML, 
 please contact us via the feedback form ({feedback}) or send an email to anna.zhukova@pasteur.fr.
