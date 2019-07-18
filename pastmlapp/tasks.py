@@ -47,10 +47,9 @@ please contact us via the feedback form ({feedback}) or send an email to anna.zh
 
 Kind regards,
 PastML team
-
 --
-Evolutionary Bioinformatics
-C3BI, USR 3756 IP CNRS
+Evolutionary Bioinformatics Unit
+Department of Computational Biology, Institut Pasteur
 Paris, France
 """.format(url=result_url, help=help_url, feedback=feedback_url, columns=', '.join(columns),
            method='{} (model {})'.format(prediction_method, model) if is_ml(prediction_method) else prediction_method,
@@ -70,10 +69,9 @@ If you wish to give us any additional details, please contact us via the feedbac
 
 Kind regards,
 PastML team
-
 --
-Evolutionary Bioinformatics
-C3BI, USR 3756 IP CNRS
+Evolutionary Bioinformatics Unit
+Department of Computational Biology, Institut Pasteur
 Paris, France
 """.format(url=result_url, help=help_url, feedback=feedback_url, columns=', '.join(columns),
                method='{} (model {})'.format(prediction_method, model) if is_ml(
