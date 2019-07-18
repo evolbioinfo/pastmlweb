@@ -90,7 +90,7 @@ class AnalysisForm(ModelForm):
 
     class Meta:
         model = Analysis
-        fields = ['prediction_method', 'model', 'email', 'title']
+        fields = ['prediction_method', 'model', 'email', 'title', 'no_trimming']
 
     def __init__(self, data=None, *args, **kwargs):
         super(AnalysisForm, self).__init__(data, *args, **kwargs)
@@ -118,7 +118,7 @@ class AnalysisForm(ModelForm):
                                                            help_text=u'(optional) Column containing tip dates.')
         self.fields.keyOrder = ['tip_id_column'] \
                                + (['character_column(s)', 'date_column'] if multi_column else ['character_column']) \
-                               + ['prediction_method', 'model', 'email', 'title']
+                               + ['prediction_method', 'model', 'email', 'title', 'no_trimming']
         self.fields = OrderedDict((k, self.fields[k]) for k in self.fields.keyOrder)
 
     def clean_prediction_method(self):

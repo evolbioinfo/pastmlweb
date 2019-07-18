@@ -3,6 +3,8 @@ from shutil import copyfile
 from celery.task import task
 from celery.utils.log import get_task_logger
 from django.urls import reverse
+import numpy as np
+from pastml.visualisation.tree_compressor import REASONABLE_NUMBER_OF_TIPS
 
 logger = get_task_logger(__name__)
 
@@ -87,7 +89,7 @@ Paris, France
 
 @task(name="apply_pastml")
 def apply_pastml(id, data, tree, data_sep, id_index, columns, date_column, model, prediction_method, name_column,
-                 html_compressed, email, title, url, work_dir):
+                 html_compressed, email, title, url, work_dir, no_trimming):
     try:
         from pastml.acr import pastml_pipeline
         from pastml.tree import read_tree
@@ -102,7 +104,7 @@ def apply_pastml(id, data, tree, data_sep, id_index, columns, date_column, model
                         model=model, prediction_method=prediction_method, name_column=name_column,
                         html_compressed=html_compressed, html=html, verbose=True, work_dir=work_dir,
                         upload_to_itol=True, itol_id='ZxuhG2okfKLQnsgd5xAEGQ', itol_project='pastmlweb',
-                        itol_tree_name=id)
+                        itol_tree_name=id, tip_size_threshold=np.inf if no_trimming else REASONABLE_NUMBER_OF_TIPS)
         itol_id = None
         itol_id_file = os.path.join(work_dir, 'iTOL_tree_id.txt')
         if os.path.exists(itol_id_file):

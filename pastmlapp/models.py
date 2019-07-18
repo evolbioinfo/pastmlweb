@@ -73,6 +73,8 @@ class Analysis(models.Model):
     title = models.CharField(max_length=128, default='PastML reconstruction is ready!', blank=True, null=True,
                              help_text=u"The title to be used in the email.")
 
+    no_trimming = models.BooleanField(default=False, help_text=u"Keep all, even minor, nodes (even if they make the visualisation cluttered).")
+
     html_compressed = models.CharField(max_length=256, default=None, blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)

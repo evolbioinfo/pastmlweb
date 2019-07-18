@@ -103,7 +103,7 @@ def analysis(request, id):
                                prediction_method=form.cleaned_data['prediction_method'],
                                name_column=columns[0], html_compressed=html_compressed, email=form.cleaned_data['email'],
                                title=form.cleaned_data['title'], url=Site.objects.get_current(request=request).domain,
-                               work_dir=work_dir)
+                               work_dir=work_dir, no_trimming=form.cleaned_data['no_trimming'])
 
             return redirect('pastmlapp:detail', id=analysis.id)
     else:
