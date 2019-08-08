@@ -12,10 +12,10 @@ from .tasks import apply_pastml
 
 def result(request, id, full=0):
     analysis = get_object_or_404(Analysis, pk=id)
-    data = 'Could not load {} ancestral character reconstruction {}'.format('compressed' if not full else 'full', id)
+    data = 'Could not load {} ancestral character reconstruction {}'.format('full' if full else 'compressed', id)
     try:
-        with open(analysis.html_compressed if not full
-                  else analysis.html_compressed.replace('.compressed.html', '.full.html'), 'r') as f:
+        with open((analysis.html_compressed.replace('.compressed.html', '.full.html') if full
+                  else analysis.html_compressed), 'r') as f:
             data = f.read()
     except:
         pass
@@ -28,9 +28,11 @@ def detail(request, id, full=0):
         columns = [column.column for column in Column.objects.filter(
                 analysis=analysis
             )]
-        context = {'id': id, 'full': full, 'model': analysis.model if is_ml(analysis.prediction_method) else None,
+        context = {'id': id, 'model': analysis.model if is_ml(analysis.prediction_method) else None,
                    'prediction_method': analysis.prediction_method,
                    'columns': ', '.join(columns)}
+        if full:
+            context['full'] = 1
         itol_id_file = os.path.join(os.path.dirname(analysis.html_compressed), 'pastml_{}_itol.txt'.format(id))
         if os.path.exists(itol_id_file):
             with open(itol_id_file, 'r') as f:
