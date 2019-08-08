@@ -37,7 +37,7 @@ def detail(request, id, full=0):
                 context['itol'] = f.readline().strip('\n')
         other_html = analysis.html_compressed.replace('.compressed.html', '.full.html') if full else analysis.html_compressed
         if os.path.exists(other_html):
-            context['other_html'] = other_html
+            context['other_html'] = 1
 
         if not os.path.exists(analysis.html_compressed.replace('{}.compressed.html'.format(analysis.id),
                                                                'pastml_{}.zip'.format(analysis.id))):
