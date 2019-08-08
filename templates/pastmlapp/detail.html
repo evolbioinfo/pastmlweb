@@ -7,19 +7,19 @@
 {% endif %}
 
 {% if full %}
-  <p class="help-ref"><i>(You can view the compressed tree visualisation <a href="{% url 'pastmlapp:detail' id=id full=0 %}" target="_blank">here</a>.)</i></p>
+  <p class="help-ref"><i>(You can view the compressed tree visualisation <a href="{% url 'pastmlapp:detail_full' id=id full=0 %}" target="_blank">here</a>.)</i></p>
 
   <div id="resizable">
-    <iframe src="{% url 'pastmlapp:result' id=id full=0 %}"  width="100%" height="{% if rec_error %} 100 {% else %} 500 {% endif %}" id="vis" allowfullscreen></iframe>
+    <iframe src="{% url 'pastmlapp:result_full' id=id full=0 %}"  width="100%" height="{% if rec_error %} 100 {% else %} 500 {% endif %}" id="vis" allowfullscreen></iframe>
   </div>
 {% else %}
   {% if other_html %}
-    <p class="help-ref"><i>(You can view the full tree visualisation <a href="{% url 'pastmlapp:detail' id=id full=1 %}" target="_blank">here</a> and at <a href="http://itol.embl.de/external.cgi?tree={{ itol }}" target="_blank">iTOL</a>.)</i></p>
+    <p class="help-ref"><i>(You can view the full tree visualisation <a href="{% url 'pastmlapp:detail_full' id=id full=1 %}" target="_blank">here</a> and at <a href="http://itol.embl.de/external.cgi?tree={{ itol }}" target="_blank">iTOL</a>.)</i></p>
   {% else %}
     <p class="help-ref"><i>(You can view the full tree visualisation at <a href="http://itol.embl.de/external.cgi?tree={{ itol }}" target="_blank">iTOL</a>.)</i></p>
   {% endif %}
   <div id="resizable">
-    <iframe src="{% url 'pastmlapp:result' id=id full=1 %}"  width="100%" height="{% if rec_error %} 100 {% else %} 500 {% endif %}" id="vis" allowfullscreen></iframe>
+    <iframe src="{% url 'pastmlapp:result_full' id=id full=1 %}"  width="100%" height="{% if rec_error %} 100 {% else %} 500 {% endif %}" id="vis" allowfullscreen></iframe>
   </div>
 {% endif %}
 {% if rec_error %}
