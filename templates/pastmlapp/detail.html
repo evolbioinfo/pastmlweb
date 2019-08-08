@@ -5,7 +5,7 @@
 {% if rec_error %}
  <p>Sorry, there was a problem with your reconstruction: </p>
 {% endif %}
-{% if not full %}
+{% if full == 0 %}
  {% if itol and other_html %}
   <p class="help-ref"><i>(You can view the full tree visualisation <a href="{% url 'pastmlapp:detail' id=id full=1 %}" target="_blank">here</a> and at <a href="http://itol.embl.de/external.cgi?tree={{ itol }}" target="_blank">iTOL</a>.)</i></p>
  {% else %}

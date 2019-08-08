@@ -9,6 +9,7 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^run/(?P<id>[\d\w-]+)$', views.analysis, name='analysis'),
     url(r'^result/(?P<id>[\d\w-]+)/(?P<full>\d)$', views.result, name='result'),
+    url(r'^view/(?P<id>[\d\w-]+)$', views.detail, name='detail'),
     url(r'^view/(?P<id>[\d\w-]+)/(?P<full>\d)$', views.detail, name='detail'),
     url(r'^feedback$', views.feedback, name='feedback'),
     url(r'^help$', views.helppage, name='help'),
