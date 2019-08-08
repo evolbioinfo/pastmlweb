@@ -94,8 +94,8 @@ def apply_pastml(id, data, tree, data_sep, id_index, columns, root_date, model, 
         import os
         import shutil
         html = None
-        if len(read_tree(tree)) <= 500:
-            html = os.path.join(work_dir, 'pastml_tree.html')
+        if len(read_tree(tree)) <= 1000:
+            html = os.path.join(work_dir, 'full_tree_visualisation.html')
 
         pastml_pipeline(tree=tree, data=data, data_sep=data_sep, id_index=id_index, columns=columns,
                         root_date=root_date,
