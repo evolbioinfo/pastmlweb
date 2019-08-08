@@ -7,21 +7,21 @@
 {% endif %}
 {% if not full %}
  {% if itol and other_html %}
-  <p class="help-ref"><i>(You can view the full tree visualisation <a href="{% url 'pastmlapp:detail id=id full=1' %}" target="_blank">here</a> and at <a href="http://itol.embl.de/external.cgi?tree={{ itol }}" target="_blank">iTOL</a>.)</i></p>
+  <p class="help-ref"><i>(You can view the full tree visualisation <a href="{% url 'pastmlapp:detail' id=id full=1' %}" target="_blank">here</a> and at <a href="http://itol.embl.de/external.cgi?tree={{ itol }}" target="_blank">iTOL</a>.)</i></p>
  {% else %}
   {% if itol %}
    <p class="help-ref"><i>(You can view the full tree visualisation at <a href="http://itol.embl.de/external.cgi?tree={{ itol }}" target="_blank">iTOL</a>.)</i></p>
   {% else %}
     {% if other_html %}
-       <p class="help-ref"><i>(You can view the full tree visualisation <a href="{% url 'pastmlapp:detail id=id full=1' %}" target="_blank">here</a>.)</i></p>
+       <p class="help-ref"><i>(You can view the full tree visualisation <a href="{% url 'pastmlapp:detail' id 1' %}" target="_blank">here</a>.)</i></p>
     {% endif %}
   {% endif %}
  {% endif %}
 {% else %}
  {% if itol %}
-   <p class="help-ref"><i>(You can view the compressed tree visualisation <a href="{% url 'pastmlapp:detail id=id' %}" target="_blank">here</a>, and the full one at <a href="http://itol.embl.de/external.cgi?tree={{ itol }}" target="_blank">iTOL</a>.)</i></p>
+   <p class="help-ref"><i>(You can view the compressed tree visualisation <a href="{% url 'pastmlapp:detail' id=id' %}" target="_blank">here</a>, and the full one at <a href="http://itol.embl.de/external.cgi?tree={{ itol }}" target="_blank">iTOL</a>.)</i></p>
  {% else %}
-  <p class="help-ref"><i>(You can view the compressed tree visualisation <a href="{% url 'pastmlapp:detail id=id' %}" target="_blank">here</a>.)</i></p>
+  <p class="help-ref"><i>(You can view the compressed tree visualisation <a href="{% url 'pastmlapp:detail' id=id' %}" target="_blank">here</a>.)</i></p>
  {% endif %}
 {% endif %}
  <div id="resizable">
