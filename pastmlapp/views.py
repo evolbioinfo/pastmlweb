@@ -3,36 +3,41 @@ from django.contrib.sites.models import Site
 from django.shortcuts import render, get_object_or_404, redirect
 from django.template.loader import render_to_string
 from pastml.ml import F81, is_ml
+from pastml.tree import read_tree
 
 from pastmlapp.forms import FeedbackForm, TreeDataForm, AnalysisForm
 from pastmlapp.models import TreeData, Analysis, Column
 from .tasks import apply_pastml
 
 
-def result(request, id):
+def result(request, id, full=0):
     analysis = get_object_or_404(Analysis, pk=id)
-    data = 'Could not load ancestral character reconstruction {}'.format(id)
+    data = 'Could not load {} ancestral character reconstruction {}'.format('compressed' if not full else 'full', id)
     try:
-        with open(analysis.html_compressed, 'r') as f:
+        with open(analysis.html_compressed if not full
+                  else analysis.html_compressed.replace('.compressed.html', '.full.html'), 'r') as f:
             data = f.read()
     except:
         pass
     return render(request, 'pastmlapp/result.html', {'text': data})
 
 
-def detail(request, id):
+def detail(request, id, full=0):
     analysis = get_object_or_404(Analysis, pk=id)
     if os.path.exists(analysis.html_compressed):
         columns = [column.column for column in Column.objects.filter(
                 analysis=analysis
             )]
-        context = {'id': id, 'model': analysis.model if is_ml(analysis.prediction_method) else None,
+        context = {'id': id, 'full': full, 'model': analysis.model if is_ml(analysis.prediction_method) else None,
                    'prediction_method': analysis.prediction_method,
                    'columns': ', '.join(columns)}
         itol_id_file = os.path.join(os.path.dirname(analysis.html_compressed), 'pastml_{}_itol.txt'.format(id))
         if os.path.exists(itol_id_file):
             with open(itol_id_file, 'r') as f:
                 context['itol'] = f.readline().strip('\n')
+        other_html = analysis.html_compressed.replace('.compressed.html', '.full.html') if full else analysis.html_compressed
+        if os.path.exists(other_html):
+            context['other_html'] = other_html
 
         if not os.path.exists(analysis.html_compressed.replace('{}.compressed.html'.format(analysis.id),
                                                                'pastml_{}.zip'.format(analysis.id))):
@@ -95,13 +100,16 @@ def analysis(request, id):
 
             work_dir = os.path.join(wd, 'pastml_{}'.format(analysis.id))
 
+            html = os.path.join(work_dir, os.path.join(wd, '{}.full.html'.format(analysis.id))) \
+                if len(read_tree(tree)) <= 1000 else None
+
             apply_pastml.delay(id=analysis.id, data=tree_data.data.path, tree=tree,
                                data_sep=tree_data.data_sep if tree_data.data_sep and tree_data.data_sep != '<tab>' else '\t',
                                id_index=form.cleaned_data['id_column'], columns=columns,
                                root_date=form.cleaned_data['root_date'] if 'root_date' in form.cleaned_data and form.cleaned_data['root_date'] else None,
                                model=form.cleaned_data['model'] if 'model' in form.cleaned_data and form.cleaned_data['model'] else F81,
                                prediction_method=form.cleaned_data['prediction_method'],
-                               name_column=columns[0], html_compressed=html_compressed, email=form.cleaned_data['email'],
+                               name_column=columns[0], html_compressed=html_compressed, html=html, email=form.cleaned_data['email'],
                                title=form.cleaned_data['title'], url=Site.objects.get_current(request=request).domain,
                                work_dir=work_dir, no_trimming=form.cleaned_data['no_trimming'],
                                timeline_type=form.cleaned_data['timeline_type'])

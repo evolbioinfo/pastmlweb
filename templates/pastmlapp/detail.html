@@ -5,18 +5,33 @@
 {% if rec_error %}
  <p>Sorry, there was a problem with your reconstruction: </p>
 {% endif %}
-{% if itol %}
-<p class="help-ref"><i>(You can view the full tree visualisation at <a href="http://itol.embl.de/external.cgi?tree={{ itol }}" target="_blank">iTOL</a>.)</i></p>
+{% if not full %}
+ {% if itol and other_html %}
+  <p class="help-ref"><i>(You can view the full tree visualisation <a href="{% url 'pastmlapp:detail id=id full=1' %}" target="_blank">here</a> and at <a href="http://itol.embl.de/external.cgi?tree={{ itol }}" target="_blank">iTOL</a>.)</i></p>
+ {% else %}
+  {% if itol %}
+   <p class="help-ref"><i>(You can view the full tree visualisation at <a href="http://itol.embl.de/external.cgi?tree={{ itol }}" target="_blank">iTOL</a>.)</i></p>
+  {% else %}
+    {% if other_html %}
+       <p class="help-ref"><i>(You can view the full tree visualisation <a href="{% url 'pastmlapp:detail id=id full=1' %}" target="_blank">here</a>.)</i></p>
+    {% endif %}
+  {% endif %}
+ {% endif %}
+{% else %}
+ {% if itol %}
+   <p class="help-ref"><i>(You can view the compressed tree visualisation <a href="{% url 'pastmlapp:detail id=id' %}" target="_blank">here</a>, and the full one at <a href="http://itol.embl.de/external.cgi?tree={{ itol }}" target="_blank">iTOL</a>.)</i></p>
+ {% else %}
+  <p class="help-ref"><i>(You can view the compressed tree visualisation <a href="{% url 'pastmlapp:detail id=id' %}" target="_blank">here</a>.)</i></p>
+ {% endif %}
 {% endif %}
  <div id="resizable">
- <iframe src="{% url 'pastmlapp:result' id=id %}"  width="100%" height="{% if rec_error %} 100 {% else %} 500 {% endif %}" id="vis" allowfullscreen></iframe>
+ <iframe src="{% url 'pastmlapp:result' id=id full=full %}"  width="100%" height="{% if rec_error %} 100 {% else %} 500 {% endif %}" id="vis" allowfullscreen></iframe>
  </div>
 {% if rec_error %}
  <p class="help-ref"><i>Please, make sure that you tree and annotation data were <a href="{% url 'pastmlapp:help' %}#data" target="_blank">formatted properly</a>,
   and <a href="{% url 'pastmlapp:feedback' %}" target="_blank">let us know</a> about this issue.</i></p>
 {% else %}
- <div class="info"><p><a href="{% url 'pastmlapp:result' id=id %}" class="btn btn-primary" download>Download</a><span class="helptext"> this visualisation as an HTML page.</span></p></div>
- <div class="info"><p><a href="/media/pastml_{{id}}.zip" class="btn btn-primary" download>Download</a><span class="helptext"> all the associated data.</span></p></div>
+ <div class="info"><p><a href="/media/pastml_{{id}}.zip" class="btn btn-primary" download>Download</a><span class="helptext"> this visualisation and all the associated data.</span></p></div>
  <p class="help-ref"><i>(You can learn more about this visualisation <a href="{% url 'pastmlapp:help' %}#visualisation" target="_blank">here</a>.)</i></p>
 {% endif %}
 

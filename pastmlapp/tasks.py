@@ -87,15 +87,12 @@ Paris, France
 
 @task(name="apply_pastml")
 def apply_pastml(id, data, tree, data_sep, id_index, columns, root_date, model, prediction_method, name_column,
-                 html_compressed, email, title, url, work_dir, no_trimming, timeline_type):
+                 html_compressed, html, email, title, url, work_dir, no_trimming, timeline_type):
     try:
         from pastml.acr import pastml_pipeline
         from pastml.tree import read_tree
         import os
         import shutil
-        html = None
-        if len(read_tree(tree)) <= 1000:
-            html = os.path.join(work_dir, 'full_tree_visualisation.html')
 
         pastml_pipeline(tree=tree, data=data, data_sep=data_sep, id_index=id_index, columns=columns,
                         root_date=root_date,
@@ -110,6 +107,10 @@ def apply_pastml(id, data, tree, data_sep, id_index, columns, root_date, model, 
             with open(itol_id_file, 'r') as f:
                 itol_id = f.readline().strip('\n')
             copyfile(itol_id_file, os.path.join(work_dir, '..', 'pastml_{}_itol.txt'.format(id)))
+        if os.path.exists(html_compressed):
+            copyfile(html_compressed, os.path.join(work_dir, 'pastml_compressed_visualisation.html'))
+        if os.path.exists(html):
+            copyfile(html, os.path.join(work_dir, 'pastml_full_tree_visualisation.html'))
         shutil.make_archive(os.path.join(work_dir, '..', 'pastml_{}'.format(id)), 'zip', work_dir)
         try:
             shutil.rmtree(work_dir)

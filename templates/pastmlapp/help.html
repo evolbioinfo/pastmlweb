@@ -18,19 +18,18 @@
     <a href="http://www.iqtree.org/" target="_blank">IQTree</a>, or
     <a href="http://www.beast2.org/" target="_blank">Beast2</a>. Once inferred the tree must be rooted
     (with an outgroup or with dates, e.g. using <a href="https://github.com/fredericlemoine/gotree" target="_blank">gotree</a>
-    or <a href="https://github.com/tothuhien/lsd-0.3beta" target="_blank">LSD</a>, etc.) The tree can (but does not have
+    or <a href="https://github.com/tothuhien/lsd-0.3beta" target="_blank">LSD</a>, etc.). The tree can (but does not have
     to) be dated.</p>
 
 <h3 id="table">Annotation table</h3>
 <p>The annotation table should be in <a href="https://en.wikipedia.org/wiki/Comma-separated_values"
                                         target="_blank">CSV</a> format (with your favourite separator character).
     Its first line must contain a <b>header</b>, specifying column names. One of the columns must contain the <b>tip
-        ids</b> (in the same format as used in the tree),
+        ids</b> (in <i>exactly</i> the same format as used in the tree),
     and there must be at least one (or more) column(s) containing <b>tip states</b> for character(s) whose ancestral
     states are to be reconstructed with PastML. The characters to be analysed with PastML should be discrete,
     e.g. countries, presence/absence of a mutation, nucleotide value at a certain position, etc.
-    If the annotation table contains <b>tip sampling dates</b>, this information can be used to produce a timeline as explained
-    <a href="#timeline">after</a>. However, this is optional. The table may contain other columns that will not be used in PastML analysis.
+    The table may contain other columns that will not be used in PastML analysis.
     You will be asked to specify which of your table columns contains what, once you've uploaded the tree and the
     table.</p>
 <p>If a state of a certain tip is <b>unknown</b>, it can be either omitted from the table or left blank. It will be estimated
@@ -46,35 +45,30 @@
     <th>ID</th>
     <th>Country</th>
     <th>Continent</th>
-    <th>Sampling date</th>
     <th>Other data</th>
   </tr>
   <tr>
     <td>t1</td>
     <td>China</td>
     <td>Asia</td>
-    <td>2016-02-21</td>
     <td>4.37</td>
   </tr>
   <tr>
     <td>t2</td>
     <td>UK</td>
     <td>Europe</td>
-    <td>2018-04-12</td>
     <td>1.23</td>
   </tr>
   <tr>
     <td>t2</td>
     <td>France</td>
     <td>Europe</td>
-    <td>2018-04-12</td>
     <td>1.23</td>
   </tr>
   <tr>
     <td>t3</td>
     <td></td>
     <td>Asia</td>
-    <td>2010-03-01</td>
     <td>3.25</td>
   </tr>
   <tr>
@@ -82,11 +76,10 @@
     <td>UK</td>
     <td></td>
     <td></td>
-    <td></td>
   </tr>
 </table><br>
 <p>
-Column <i>ID</i> contains tree node ids, columns <i>Country</i> and <i>Continent</i> can be used for ancestral character reconstruction by PastML, column <i>Sampling date</i> contains tip dates that can be used to visualise a <a href="#timeline">timeline</a>,
+Column <i>ID</i> contains tree node ids, columns <i>Country</i> and <i>Continent</i> can be used for ancestral character reconstruction by PastML,
     and column <i>Other data</i> seems to contain continuous data that cannot be analysed with PastML.
     Tip t1 is annotated with <i>Country:China</i> and <i>Continent:Asia</i>, tip t2 with <i>Country:UK or France</i> and <i>Continent:Europe</i>, for tip t3 Country is unknown (and will be inferred by PastML), but it is annotated with <i>Continent:Asia</i>,
     finally for the internal node n1 Continent is unknown, but Country is fixed to UK. For the other nodes (tip t4, internal node n2, and root) their locations are unknown and can be inferred by PastML.
@@ -214,12 +207,21 @@ Column <i>ID</i> contains tree node ids, columns <i>Country</i> and <i>Continent
     we compress the tree as described in the previous section.</p>
 
 <h2 id="timeline">Timeline</h2>
-<p>When a column containing tips sampling dates is specified, we visualize a timeline:
-    we split the time between the year of the the oldest and the most recent samples into five intervals,
-    and add a slider to the visualization, allowing to navigate in time.
-    At each milestone we hide the subtrees whose all tips were sampled after.
-    When sampling dates are not available, we provide a timeline based on tip-to-root distances instead.
+<p>A slider is added to the right of the visualisation that allows to navigate in time.
+    By default the time is measured in distance to the root, however if the input tree is dated
+    (i.e. its branch lengths are specified in time units), and the root date has been specified by the user,
+    the time is shown as dates.
+
+    Three types of timeline can be chosen: sampled, nodes, and LTT.
+    They differ in the elements of the tree that get hidden as the slider position is changed.
 </p>
+    <h4 id="sampled">sampled</h4>
+    <p>All the lineages sampled after the timepoint selected on the slider are hidden.</p>
+    <h4 id="nodes">nodes</h4>
+    <p>All the nodes with a more recent date/larger distance to root than the one selected on the slider are hidden.</p>
+    <h4 id="LTT">LTT</h4>
+    <p>All the nodes whose branch started after the timepoint selected on the slider are hidden,
+        and the external branches are cut to the specified date/distance to root if needed.</p>
 
 
 <h2 id="itol">Full tree visualisation with <a href="https://itol.embl.de/" target="_blank">iTOL</a></h2>
