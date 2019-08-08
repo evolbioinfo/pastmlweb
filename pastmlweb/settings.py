@@ -46,6 +46,12 @@ INSTALLED_APPS = [
     'django.contrib.sites'
 ]
 
+FILE_CHARSET = 'utf-8'
+
+DATETIME_INPUT_FORMATS = [
+    '%d-%m-%Y',              # '25-10-2006'
+]
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

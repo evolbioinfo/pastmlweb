@@ -6,6 +6,7 @@ from pastml.acr import COPY
 from pastml.ml import MPPA, MAP, JOINT, ML, ALL
 from pastml.models.f81_like import F81, JC, EFT
 from pastml.parsimony import ACCTRAN, DELTRAN, DOWNPASS, MP
+from pastml.visualisation.cytoscape_manager import TIMELINE_SAMPLED, TIMELINE_NODES, TIMELINE_LTT
 
 MODEL_CHOICES = (
     (F81, 'F81 (Felsenstein 1981)'),
@@ -24,6 +25,12 @@ METHOD_CHOICES = (
     (MP, 'max likelihood: MP (apply all available max parsimony methods)'),
     (ALL, 'all: ALL (apply all available methods)'),
     (COPY, 'as-is: COPY (copy node states from the annotation table)'),
+)
+
+TIMELINE_CHOICES = (
+    (TIMELINE_SAMPLED, 'sampled: all the lineages sampled after the selected date/distance to root are hidden'),
+    (TIMELINE_NODES, 'nodes: all the nodes with a more recent date/larger distance to root are hidden'),
+    (TIMELINE_LTT, 'LTT: all the nodes whose branch started after the selected date/distance to root are hidden'),
 )
 
 
@@ -59,8 +66,9 @@ class Analysis(models.Model):
                                     help_text=u'The number of the column in the annotation file '
                                               u'containing the tip ids (by default 0, e.g. the first column).')
 
-    date_column = models.CharField(max_length=128, default=None, blank=True, null=True,
-                                   help_text=u'(optional) Column containing tip dates.')
+    root_date = models.CharField(max_length=11, blank=True, null=True, default=None,
+                                 help_text=u'(optional) Only specify if your tree is dated, '
+                                           u'i.e. its branch lengths are measured in time units. Format can be either "2013-02-19" or "2013.13425".')
 
     model = models.CharField(max_length=4, default=F81, choices=MODEL_CHOICES,
                              help_text=u'Evolutionary model for state changes (for max likelihood methods only).')
@@ -68,12 +76,16 @@ class Analysis(models.Model):
                                          help_text=u'Ancestral state prediction method.')
 
     email = models.EmailField(default=None, blank=True, null=True,
-                              help_text=u"If specified, you'll receive an email at this address "
+                              help_text=u"(optional) If specified, you'll receive an email at this address "
                                         u"once the PastML reconstruction is ready.")
     title = models.CharField(max_length=128, default='PastML reconstruction is ready!', blank=True, null=True,
                              help_text=u"The title to be used in the email.")
 
-    no_trimming = models.BooleanField(default=False, help_text=u"Keep all, even minor, nodes (even if they make the visualisation cluttered).")
+    no_trimming = models.BooleanField(default=False, help_text=u"Keep all, even minor, nodes "
+                                                               u"(even if they make the visualisation cluttered).")
+
+    timeline_type = models.CharField(max_length=8, default=TIMELINE_SAMPLED, choices=TIMELINE_CHOICES,
+                                     help_text=u'Timeline behaviour: what happens for each date/distance to root selected on the slider.')
 
     html_compressed = models.CharField(max_length=256, default=None, blank=True, null=True)
 

@@ -86,8 +86,8 @@ Paris, France
 
 
 @task(name="apply_pastml")
-def apply_pastml(id, data, tree, data_sep, id_index, columns, date_column, model, prediction_method, name_column,
-                 html_compressed, email, title, url, work_dir, no_trimming):
+def apply_pastml(id, data, tree, data_sep, id_index, columns, root_date, model, prediction_method, name_column,
+                 html_compressed, email, title, url, work_dir, no_trimming, timeline_type):
     try:
         from pastml.acr import pastml_pipeline
         from pastml.tree import read_tree
@@ -98,11 +98,12 @@ def apply_pastml(id, data, tree, data_sep, id_index, columns, date_column, model
             html = os.path.join(work_dir, 'pastml_tree.html')
 
         pastml_pipeline(tree=tree, data=data, data_sep=data_sep, id_index=id_index, columns=columns,
-                        date_column=date_column if date_column else None,
+                        root_date=root_date,
                         model=model, prediction_method=prediction_method, name_column=name_column,
                         html_compressed=html_compressed, html=html, verbose=True, work_dir=work_dir,
                         upload_to_itol=True, itol_id='ZxuhG2okfKLQnsgd5xAEGQ', itol_project='pastmlweb',
-                        itol_tree_name=id, tip_size_threshold=np.inf if no_trimming else REASONABLE_NUMBER_OF_TIPS)
+                        itol_tree_name=id, tip_size_threshold=np.inf if no_trimming else REASONABLE_NUMBER_OF_TIPS,
+                        timeline_type=timeline_type)
         itol_id = None
         itol_id_file = os.path.join(work_dir, 'iTOL_tree_id.txt')
         if os.path.exists(itol_id_file):

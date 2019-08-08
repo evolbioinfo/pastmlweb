@@ -25,7 +25,7 @@
             {% else %}
       <div class="field">
         {% endif %}
-            <p>
+          <p>
             <label class="mylabel">{{ field.label }}</label>
             {{ field }}
             <span class="helptext">{{ field.help_text|safe}}</span>
@@ -56,21 +56,21 @@
         adjustModelToMethod(this);
     }
 
-    function adjustTitleToEmail(e) {
-        var t = document.getElementById("id_title");
-        if (e.value && e.value != "") {
-            t.disabled = false;
-            t.parentNode.style.opacity = "1";
-        } else {
-            t.disabled = true;
-            t.parentNode.style.opacity = "0.5";
-        }
-    }
+    <!--function adjustTitleToEmail(e) {-->
+        <!--var t = document.getElementById("id_title");-->
+        <!--if (e.value && e.value != "") {-->
+            <!--t.disabled = false;-->
+            <!--t.parentNode.style.opacity = "1";-->
+        <!--} else {-->
+            <!--t.disabled = true;-->
+            <!--t.parentNode.style.opacity = "0.5";-->
+        <!--}-->
+    <!--}-->
 
-    var e = document.getElementById('id_email');
-    adjustTitleToEmail(e);
-    e.onchange = function () {
-        adjustTitleToEmail(this);
-    }
+    <!--var e = document.getElementById('id_email');-->
+    <!--adjustTitleToEmail(e);-->
+    <!--e.onchange = function () {-->
+        <!--adjustTitleToEmail(this);-->
+    <!--}-->
 </script>
 {% endblock %}

@@ -4,6 +4,7 @@ from django import forms
 from django.core.exceptions import NON_FIELD_ERRORS
 from ete3 import Tree
 from multiselectfield import MultiSelectFormField
+from pastml.acr import datetime2numeric
 from pastml.ml import is_ml
 
 from pastmlapp.models import TreeData, Analysis, Column
@@ -37,7 +38,7 @@ class TreeDataForm(ModelForm):
 
         widgets = {
             'data': forms.FileInput(attrs={'id': 'csv'}),
-            'tree': forms.FileInput(attrs={'id': 'nwk'}),
+            'tree': forms.FileInput(attrs={'id': 'nwk'})
         }
 
     def clean(self):
@@ -90,7 +91,7 @@ class AnalysisForm(ModelForm):
 
     class Meta:
         model = Analysis
-        fields = ['prediction_method', 'model', 'email', 'title', 'no_trimming']
+        fields = ['prediction_method', 'model', 'root_date', 'timeline_type', 'no_trimming', 'email', 'title']
 
     def __init__(self, data=None, *args, **kwargs):
         super(AnalysisForm, self).__init__(data, *args, **kwargs)
@@ -99,7 +100,8 @@ class AnalysisForm(ModelForm):
                                     for _ in pd.read_table(td.data.path, sep=td.data_sep, header=0).columns)
 
         self.fields['tip_id_column'] = forms.ChoiceField(required=True, choices=self.column_choices,
-                                                         help_text=u'Column containing tip ids (in the same format as in the tree).')
+                                                         help_text=u'Column containing tip ids '
+                                                                   u'(in the same format as in the tree).')
 
         multi_column = len(self.column_choices) > 2
 
@@ -113,12 +115,9 @@ class AnalysisForm(ModelForm):
                                   help_text=u'Column whose ancestral states are to be reconstructed.',
                                   initial=self.column_choices[1])
 
-        if multi_column:
-            self.fields['date_column'] = forms.ChoiceField(required=False, choices=((None, ''),) + self.column_choices,
-                                                           help_text=u'(optional) Column containing tip dates.')
-        self.fields.keyOrder = ['tip_id_column'] \
-                               + (['character_column(s)', 'date_column'] if multi_column else ['character_column']) \
-                               + ['prediction_method', 'model', 'email', 'title', 'no_trimming']
+        self.fields.keyOrder = ['tip_id_column', 'character_column{}'.format('s' if multi_column else ''),
+                                'prediction_method', 'model', 'root_date', 'timeline_type', 'no_trimming',
+                                'email', 'title']
         self.fields = OrderedDict((k, self.fields[k]) for k in self.fields.keyOrder)
 
     def clean_prediction_method(self):
@@ -126,6 +125,19 @@ class AnalysisForm(ModelForm):
         if not is_ml(m):
             self.fields['model'].required = False
         return m
+
+    def clean_root_date(self):
+        root_date = self.cleaned_data.get('root_date', None)
+        if root_date:
+            try:
+                float(root_date)
+            except ValueError:
+                try:
+                    datetime2numeric(pd.to_datetime(root_date, infer_datetime_format=True))
+                except ValueError:
+                    self.add_error('root_date',
+                                   u'Your root date format is invalid, please use YYYY-mm-dd or float.')
+        return root_date
 
     def save(self, commit=True):
         self.cleaned_data['id_column'] = next(i for (i, (c, _)) in enumerate(self.column_choices)
