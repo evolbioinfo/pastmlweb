@@ -35,8 +35,7 @@ def detail(request, id, full=0):
         if os.path.exists(itol_id_file):
             with open(itol_id_file, 'r') as f:
                 context['itol'] = f.readline().strip('\n')
-        other_html = analysis.html_compressed.replace('.compressed.html', '.full.html') if full else analysis.html_compressed
-        if os.path.exists(other_html):
+        if os.path.exists(analysis.html_compressed.replace('.compressed.html', '.full.html') if full else analysis.html_compressed):
             context['other_html'] = 1
 
         if not os.path.exists(analysis.html_compressed.replace('{}.compressed.html'.format(analysis.id),
@@ -100,7 +99,7 @@ def analysis(request, id):
 
             work_dir = os.path.join(wd, 'pastml_{}'.format(analysis.id))
 
-            html = os.path.join(work_dir, os.path.join(wd, '{}.full.html'.format(analysis.id))) \
+            html = os.path.join(wd, '{}.full.html'.format(analysis.id)) \
                 if len(read_tree(tree)) <= 1000 else None
 
             apply_pastml.delay(id=analysis.id, data=tree_data.data.path, tree=tree,
