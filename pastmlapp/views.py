@@ -10,19 +10,29 @@ from pastmlapp.models import TreeData, Analysis, Column
 from .tasks import apply_pastml
 
 
-def result(request, id, full=0):
+def result(request, id):
     analysis = get_object_or_404(Analysis, pk=id)
-    data = 'Could not load {} ancestral character reconstruction {}'.format('full' if full else 'compressed', id)
+    data = 'Could not load ancestral character reconstruction {}'.format(id)
     try:
-        with open((analysis.html_compressed.replace('.compressed.html', '.full.html') if full
-                  else analysis.html_compressed), 'r') as f:
+        with open(analysis.html_compressed, 'r') as f:
             data = f.read()
     except:
         pass
     return render(request, 'pastmlapp/result.html', {'text': data})
 
 
-def detail(request, id, full=0):
+def result_full(request, id):
+    analysis = get_object_or_404(Analysis, pk=id)
+    data = 'Could not load full tree visualisation for {} (probably your tree is too big).'.format(id)
+    try:
+        with open(analysis.html_compressed.replace('.compressed.html', '.full.html'), 'r') as f:
+            data = f.read()
+    except:
+        pass
+    return render(request, 'pastmlapp/result.html', {'text': data})
+
+
+def detail(request, id):
     analysis = get_object_or_404(Analysis, pk=id)
     if os.path.exists(analysis.html_compressed):
         columns = [column.column for column in Column.objects.filter(
@@ -31,15 +41,38 @@ def detail(request, id, full=0):
         context = {'id': id, 'model': analysis.model if is_ml(analysis.prediction_method) else None,
                    'prediction_method': analysis.prediction_method,
                    'columns': ', '.join(columns)}
-        if full:
-            context['full'] = 1
         itol_id_file = os.path.join(os.path.dirname(analysis.html_compressed), 'pastml_{}_itol.txt'.format(id))
         if os.path.exists(itol_id_file):
             with open(itol_id_file, 'r') as f:
                 context['itol'] = f.readline().strip('\n')
-        if os.path.exists(analysis.html_compressed.replace('.compressed.html', '.full.html') if full else analysis.html_compressed):
+        if os.path.exists(analysis.html_compressed.replace('.compressed.html', '.full.html')):
             context['other_html'] = 1
 
+        if not os.path.exists(analysis.html_compressed.replace('{}.compressed.html'.format(analysis.id),
+                                                               'pastml_{}.zip'.format(analysis.id))):
+            context['rec_error'] = True
+
+    else:
+        context = {}
+    return render(request, 'pastmlapp/layout.html', {
+        'title': 'Results',
+        'content': render_to_string('pastmlapp/detail.html', request=request, context=context)
+    })
+
+
+def detail_full(request, id):
+    analysis = get_object_or_404(Analysis, pk=id)
+    if os.path.exists(analysis.html_compressed):
+        columns = [column.column for column in Column.objects.filter(
+                analysis=analysis
+            )]
+        context = {'id': id, 'full': 1, 'model': analysis.model if is_ml(analysis.prediction_method) else None,
+                   'prediction_method': analysis.prediction_method,
+                   'columns': ', '.join(columns)}
+        itol_id_file = os.path.join(os.path.dirname(analysis.html_compressed), 'pastml_{}_itol.txt'.format(id))
+        if os.path.exists(itol_id_file):
+            with open(itol_id_file, 'r') as f:
+                context['itol'] = f.readline().strip('\n')
         if not os.path.exists(analysis.html_compressed.replace('{}.compressed.html'.format(analysis.id),
                                                                'pastml_{}.zip'.format(analysis.id))):
             context['rec_error'] = True
@@ -115,7 +148,7 @@ def analysis(request, id):
                                work_dir=work_dir, no_trimming=form.cleaned_data['no_trimming'],
                                timeline_type=form.cleaned_data['timeline_type'])
 
-            return redirect('pastmlapp:detail', id=analysis.id, full=0)
+            return redirect('pastmlapp:detail', id=analysis.id)
     else:
         form = AnalysisForm(instance=analysis)
 
