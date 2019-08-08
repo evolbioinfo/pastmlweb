@@ -114,7 +114,7 @@ def analysis(request, id):
                                work_dir=work_dir, no_trimming=form.cleaned_data['no_trimming'],
                                timeline_type=form.cleaned_data['timeline_type'])
 
-            return redirect('pastmlapp:detail', id=analysis.id)
+            return redirect('pastmlapp:detail', id=analysis.id, full=0)
     else:
         form = AnalysisForm(instance=analysis)
 
