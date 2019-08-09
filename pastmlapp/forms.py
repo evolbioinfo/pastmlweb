@@ -115,7 +115,7 @@ class AnalysisForm(ModelForm):
                                   help_text=u'Column whose ancestral states are to be reconstructed.',
                                   initial=self.column_choices[1])
 
-        self.fields.keyOrder = ['tip_id_column', 'character_column{}'.format('s' if multi_column else ''),
+        self.fields.keyOrder = ['tip_id_column', 'character_column{}'.format('(s)' if multi_column else ''),
                                 'prediction_method', 'model', 'root_date', 'timeline_type', 'no_trimming',
                                 'email', 'title']
         self.fields = OrderedDict((k, self.fields[k]) for k in self.fields.keyOrder)
