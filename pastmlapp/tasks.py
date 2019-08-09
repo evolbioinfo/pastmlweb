@@ -109,7 +109,7 @@ def apply_pastml(id, data, tree, data_sep, id_index, columns, root_date, model, 
             copyfile(itol_id_file, os.path.join(work_dir, '..', 'pastml_{}_itol.txt'.format(id)))
         if os.path.exists(html_compressed):
             copyfile(html_compressed, os.path.join(work_dir, 'pastml_compressed_visualisation.html'))
-        if os.path.exists(html):
+        if html and os.path.exists(html):
             copyfile(html, os.path.join(work_dir, 'pastml_full_tree_visualisation.html'))
         shutil.make_archive(os.path.join(work_dir, '..', 'pastml_{}'.format(id)), 'zip', work_dir)
         try:
