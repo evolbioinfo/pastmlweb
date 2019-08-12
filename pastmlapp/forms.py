@@ -1,17 +1,18 @@
 from collections import OrderedDict
 
+import pandas as pd
 from django import forms
 from django.core.exceptions import NON_FIELD_ERRORS
-from ete3 import Tree
+from django.forms import ModelForm, CharField, EmailField, widgets
 from multiselectfield import MultiSelectFormField
-from pastml.acr import datetime2numeric
+from pastml.acr import parse_date
 from pastml.ml import is_ml
+from pastml.tree import read_forest, read_tree
 
 from pastmlapp.models import TreeData, Analysis, Column
 from pastmlapp.tasks import send_feedback_email
-from django.forms import ModelForm, CharField, EmailField, widgets
 
-import pandas as pd
+MAX_N_TREES = 5
 
 
 class FeedbackForm(forms.Form):
@@ -52,18 +53,18 @@ class TreeDataForm(ModelForm):
         f = cleaned_data.get('tree', None)
         if f:
             f = f.file  # the file in Memory
-            tree, tree_str = None, None
             try:
-                tree_str = f.read().decode()
-                for format in range(10):
-                    try:
-                        tree = Tree(tree_str, format=format)
-                        break
-                    except:
-                        pass
+                nwks = f.read().decode().replace('\n', '').split(';')
+                if not nwks:
+                    self.add_error('tree',
+                                   u'Could not find any trees (in Newick format) in the file.')
+                else:
+                    n_trees = len([read_tree(nwk + ';') for nwk in nwks[:-1]])
+                    if n_trees > MAX_N_TREES:
+                        self.add_error('tree',
+                                       u'The file contains too many trees ({}), the limit is {}.'
+                                       .format(n_trees, MAX_N_TREES))
             except:
-                pass
-            if not tree:
                 self.add_error('tree',
                                u'Your tree does not seem to be in Newick format.')
 
@@ -130,13 +131,16 @@ class AnalysisForm(ModelForm):
         root_date = self.cleaned_data.get('root_date', None)
         if root_date:
             try:
-                float(root_date)
-            except ValueError:
-                try:
-                    datetime2numeric(pd.to_datetime(root_date, infer_datetime_format=True))
-                except ValueError:
+                root_dates = [_.strip(' ') for _ in root_date.replace('\t', ' ').split(' ') if _.strip(' ')]
+                n_dates = len([parse_date(_) for _ in root_dates])
+                n_trees = len(read_forest(TreeData.objects.get(pk=self.instance.tree_data.id).tree.path))
+                if 1 < n_dates < n_trees:
                     self.add_error('root_date',
-                                   u'Your root date format is invalid, please use YYYY-mm-dd or float.')
+                                   u'Not enough dates for your {} trees.'.format(n_trees))
+                root_date = ' '.join(root_dates)
+            except ValueError:
+                self.add_error('root_date',
+                               u'Your root date format is invalid, please use YYYY-mm-dd or float.')
         return root_date
 
     def save(self, commit=True):

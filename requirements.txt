@@ -6,4 +6,4 @@ Django>=2.0.8
 dnspython>=1.15.0
 email-validator>=1.0.3
 django-multiselectfield>=0.1.8
-pastml>=1.9.18
+pastml>=1.9.19

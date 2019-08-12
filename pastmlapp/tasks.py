@@ -90,7 +90,6 @@ def apply_pastml(id, data, tree, data_sep, id_index, columns, root_date, model, 
                  html_compressed, html, email, title, url, work_dir, no_trimming, timeline_type):
     try:
         from pastml.acr import pastml_pipeline
-        from pastml.tree import read_tree
         import os
         import shutil
 

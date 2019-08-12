@@ -28,9 +28,9 @@ METHOD_CHOICES = (
 )
 
 TIMELINE_CHOICES = (
-    (TIMELINE_SAMPLED, 'sampled: all the lineages sampled after the selected date/distance to root are hidden'),
-    (TIMELINE_NODES, 'nodes: all the nodes with a more recent date/larger distance to root are hidden'),
-    (TIMELINE_LTT, 'LTT: all the nodes whose branch started after the selected date/distance to root are hidden'),
+    (TIMELINE_SAMPLED, 'SAMPLED (all the lineages sampled after the selected date/distance to root are hidden)'),
+    (TIMELINE_NODES, 'NODES (all the nodes with a more recent date/larger distance to root are hidden)'),
+    (TIMELINE_LTT, 'LTT (all the nodes whose branch started after the selected date/distance to root are hidden)'),
 )
 
 
@@ -38,11 +38,11 @@ class TreeData(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     tree = models.FileField(upload_to='',
-                            help_text=u'A <b>rooted</b> tree (in <a href=https://en.wikipedia.org/wiki/Newick_format '
+                            help_text=u'<b>Rooted</b> tree(s) (in <a href=https://en.wikipedia.org/wiki/Newick_format '
                                       u'target=_blank>Newick</a> format).')
 
     data = models.FileField(upload_to='',
-                            help_text=u'An annotation table specifying tip states '
+                            help_text=u'Annotation table specifying tip states '
                                       u'(in <a href="https://en.wikipedia.org/wiki/Comma-separated_values" '
                                       u'target="_blank">CSV</a> format). '
                                       u'You will be asked to choose columns of interest at the next step.')
@@ -64,11 +64,12 @@ class Analysis(models.Model):
 
     id_column = models.IntegerField(default=0,
                                     help_text=u'The number of the column in the annotation file '
-                                              u'containing the tip ids (by default 0, e.g. the first column).')
+                                              u'containing the tip ids (by default 0, i.e. the first column).')
 
-    root_date = models.CharField(max_length=11, blank=True, null=True, default=None,
-                                 help_text=u'(optional) Only specify if your tree is dated, '
-                                           u'i.e. its branch lengths are measured in time units. Format can be either "2013-02-19" or "2013.13425".')
+    root_date = models.CharField(max_length=55, blank=True, null=True, default=None,
+                                 help_text=u'(optional) Only specify for dated tree(s), '
+                                           u'i.e. with branch lengths measured in time units. Format can be either "2013-02-19" or "2013.13425"; '
+                                           u'if your newick file contains several trees, specify the same number of root dates, separated by whitespace.')
 
     model = models.CharField(max_length=4, default=F81, choices=MODEL_CHOICES,
                              help_text=u'Evolutionary model for state changes (for max likelihood methods only).')
@@ -76,8 +77,7 @@ class Analysis(models.Model):
                                          help_text=u'Ancestral state prediction method.')
 
     email = models.EmailField(default=None, blank=True, null=True,
-                              help_text=u"(optional) If specified, you'll receive an email at this address "
-                                        u"once the PastML reconstruction is ready.")
+                              help_text=u"(optional) To receive an email once the PastML reconstruction is ready.")
     title = models.CharField(max_length=128, default='PastML reconstruction is ready!', blank=True, null=True,
                              help_text=u"The title to be used in the email.")
 
@@ -85,7 +85,7 @@ class Analysis(models.Model):
                                                                u"(even if they make the visualisation cluttered).")
 
     timeline_type = models.CharField(max_length=8, default=TIMELINE_SAMPLED, choices=TIMELINE_CHOICES,
-                                     help_text=u'Timeline behaviour: what happens for each date/distance to root selected on the slider.')
+                                     help_text=u'Timeline behaviour: what happens at each date/distance to root selected on the slider.')
 
     html_compressed = models.CharField(max_length=256, default=None, blank=True, null=True)
 
@@ -97,4 +97,3 @@ class Column(models.Model):
 
     column = models.CharField(max_length=512,
                               help_text=u'Column containing tip values for the state to be reconstructed with PastML.')
-
