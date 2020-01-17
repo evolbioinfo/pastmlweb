@@ -17,7 +17,7 @@ MAX_N_TREES = 5
 
 class FeedbackForm(forms.Form):
     error_css_class = "error"
-    email = EmailField(label="Email Address", help_text=u'Your email address.')
+    email = EmailField(label="Email Address", help_text=u'Your email address (specify it if you want to receive a reply).')
     message = CharField(label="Message", widget=forms.Textarea(attrs={'rows': 5}))
 
     def send_email(self):
