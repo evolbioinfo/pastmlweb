@@ -7,6 +7,10 @@
   <p>To learn more about how PastML works, please visit our <a href="{% url 'pastmlapp:help' %}">Help page</a>.</p>
   <p>To learn even more, to cite PastML, or to see the data and simulations described in the article, see <a href="{% url 'pastmlapp:cite' %}">here</a>.</p>
   <p>To install PastML locally or use it via docker, follow <a href="{% url 'pastmlapp:install' %}">the installation instructions</a>.</p>
+  <p>PastML source code is available on <a href="https://github.com/evolbioinfo/pastml" target="_blank">github</a>.</p>
+
+  <h2>Cite PastML</h2>
+  <p>Ishikawa SA, Zhukova A, Iwasaki W, Gascuel O (2019) <b>A Fast Likelihood Method to Reconstruct and Visualize Ancestral Scenarios</b>. <a href="https://doi.org/10.1093/molbev/msz131" target="_blank"><i>Molecular Biology and Evolution</i>, msz131</a>.</p>
 
   <h2>Try it now</h2>
   <p>You need two files to run PastML: </p>
@@ -26,5 +30,8 @@
     <li>a rooted HIV-1A tree with 152 tips,</li>
     <li>a comma-separated annotation file describing the country of sampling for each tree tip.</li>
   </ul>
+  <p>Check out the visualisation of the Albanian data phylogeography:
+    <a href="{% url 'pastmlapp:view' id=e1cef896-cba8-498b-8f82-e19339d3e7a6 %}" target="_blank">compressed visualisation</a>
+    and <a href="{% url 'pastmlapp:view_full' id=e1cef896-cba8-498b-8f82-e19339d3e7a6 %}" target="_blank">full tree visualisation</a>.</p>
   <a class="btn btn-primary" type="submit" onclick="window.open('/static/Albania.zip')" role="button">Download data</a>
 </div>
