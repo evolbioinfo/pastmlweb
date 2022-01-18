@@ -1,7 +1,7 @@
 pandas
 ete3
 amqp==2.5.2
-celery==4.1.1
+celery==5.2.2
 Django>=2.0.8
 dnspython>=1.15.0
 email-validator>=1.0.3
