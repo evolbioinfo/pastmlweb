@@ -161,19 +161,9 @@ def analysis(request, id):
 
 
 def feedback(request):
-    if request.method == 'POST':
-        form = FeedbackForm(data=request.POST)
-        if form.is_valid():
-            form.send_email()
-            return redirect('pastmlapp:index')
-    else:
-        form = FeedbackForm
-
     return render(request, 'pastmlapp/layout.html', {
         'title': 'Contact us',
-        'content': render_to_string('pastmlapp/feedback.html', request=request, context={
-            'form': form
-        })
+        'content': render_to_string('pastmlapp/feedback.html')
     })
 
 

@@ -15,15 +15,6 @@ from pastmlapp.tasks import send_feedback_email
 MAX_N_TREES = 5
 
 
-class FeedbackForm(forms.Form):
-    error_css_class = "error"
-    email = EmailField(label="Email Address", help_text=u'Your email address (specify it if you want to receive a reply).')
-    message = CharField(label="Message", widget=forms.Textarea(attrs={'rows': 5}))
-
-    def send_email(self):
-        return send_feedback_email.delay(self.cleaned_data['email'], self.cleaned_data['message']).id
-
-
 # Create the form class.
 class TreeDataForm(ModelForm):
     error_css_class = "error"

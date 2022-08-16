@@ -9,17 +9,6 @@ from pastml.visualisation.tree_compressor import REASONABLE_NUMBER_OF_TIPS
 logger = get_task_logger(__name__)
 
 
-@task(name="send_feedback_email")
-def send_feedback_email(email, message):
-    """sends an email when feedback form is filled successfully"""
-    logger.info("Sent feedback email")
-    from django.core.mail import EmailMessage
-
-    email = EmailMessage(subject='PastML web feedback', body=message, to=('anna.zhukova@pasteur.fr', ),
-                         attachments=None, headers=None, cc=None, reply_to=(email,))
-    return email.send(fail_silently=False)
-
-
 @task(name="send_analysis_email")
 def send_analysis_email(email, url, id, title, columns, model, prediction_method, itol_id, error=None):
     """sends an email when PastML analysis is finished"""
