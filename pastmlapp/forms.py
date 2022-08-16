@@ -3,14 +3,13 @@ from collections import OrderedDict
 import pandas as pd
 from django import forms
 from django.core.exceptions import NON_FIELD_ERRORS
-from django.forms import ModelForm, CharField, EmailField, widgets
+from django.forms import ModelForm, widgets
 from multiselectfield import MultiSelectFormField
 from pastml.acr import parse_date
 from pastml.ml import is_ml
 from pastml.tree import read_forest, read_tree
 
 from pastmlapp.models import TreeData, Analysis, Column
-from pastmlapp.tasks import send_feedback_email
 
 MAX_N_TREES = 5
 

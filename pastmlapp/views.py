@@ -5,7 +5,7 @@ from django.template.loader import render_to_string
 from pastml.ml import F81, is_ml
 from pastml.tree import read_forest
 
-from pastmlapp.forms import FeedbackForm, TreeDataForm, AnalysisForm
+from pastmlapp.forms import TreeDataForm, AnalysisForm
 from pastmlapp.models import TreeData, Analysis, Column
 from .tasks import apply_pastml
 
