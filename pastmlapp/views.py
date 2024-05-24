@@ -41,10 +41,10 @@ def detail(request, id):
         context = {'id': id, 'model': analysis.model if is_ml(analysis.prediction_method) else None,
                    'prediction_method': analysis.prediction_method,
                    'columns': ', '.join(columns)}
-        itol_id_file = os.path.join(os.path.dirname(analysis.html_compressed), 'pastml_{}_itol.txt'.format(id))
-        if os.path.exists(itol_id_file):
-            with open(itol_id_file, 'r') as f:
-                context['itol'] = f.readline().strip('\n')
+        # itol_id_file = os.path.join(os.path.dirname(analysis.html_compressed), 'pastml_{}_itol.txt'.format(id))
+        # if os.path.exists(itol_id_file):
+        #     with open(itol_id_file, 'r') as f:
+        #         context['itol'] = f.readline().strip('\n')
         if os.path.exists(analysis.html_compressed.replace('.compressed.html', '.full.html')):
             context['other_html'] = 1
 

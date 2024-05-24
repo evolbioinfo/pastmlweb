@@ -14,9 +14,9 @@
   </div>
 {% else %}
   {% if other_html %}
-    <p class="help-ref"><i>(You can view the full tree visualisation <a href="{% url 'pastmlapp:detail_full' id=id %}" target="_blank">here</a> and at <a href="http://itol.embl.de/external.cgi?tree={{ itol }}" target="_blank">iTOL</a>.)</i></p>
+    <p class="help-ref"><i>(You can view the full tree visualisation <a href="{% url 'pastmlapp:detail_full' id=id %}" target="_blank">here</a>.)</i></p> <!--and at <a href="http://itol.embl.de/external.cgi?tree={{ itol }}" target="_blank">iTOL</a>.)</i></p>-->
   {% else %}
-    <p class="help-ref"><i>(You can view the full tree visualisation at <a href="http://itol.embl.de/external.cgi?tree={{ itol }}" target="_blank">iTOL</a>.)</i></p>
+<!--    <p class="help-ref"><i>(You can view the full tree visualisation at <a href="http://itol.embl.de/external.cgi?tree={{ itol }}" target="_blank">iTOL</a>.)</i></p>-->
   {% endif %}
   <div id="resizable">
     <iframe src="{% url 'pastmlapp:result' id=id %}"  width="100%" height="{% if rec_error %} 100 {% else %} 500 {% endif %}" id="vis" allowfullscreen></iframe>

@@ -86,8 +86,8 @@ def apply_pastml(id, data, tree, data_sep, id_index, columns, root_date, model, 
                         root_date=root_date,
                         model=model, prediction_method=prediction_method, name_column=name_column,
                         html_compressed=html_compressed, html=html, verbose=True, work_dir=work_dir,
-                        upload_to_itol=True, itol_id='ZxuhG2okfKLQnsgd5xAEGQ', itol_project='pastmlweb',
-                        itol_tree_name=id, tip_size_threshold=np.inf if no_trimming else REASONABLE_NUMBER_OF_TIPS,
+                        # upload_to_itol=True, itol_id='ZxuhG2okfKLQnsgd5xAEGQ', itol_project='pastmlweb', itol_tree_name=id,
+                        tip_size_threshold=np.inf if no_trimming else REASONABLE_NUMBER_OF_TIPS,
                         timeline_type=timeline_type)
         itol_id = None
         itol_id_file = os.path.join(work_dir, 'iTOL_tree_id.txt')
