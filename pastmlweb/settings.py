@@ -27,7 +27,7 @@ with open('/etc/secret_key.txt') as f:
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['157.99.69.55', 'localhost', '127.0.0.1', 'pastml.c3bi.pasteur.fr', 'pastml.pasteur.fr']
+ALLOWED_HOSTS = ['157.99.69.55', '157.99.69.1', 'localhost', '127.0.0.1', 'pastml.c3bi.pasteur.fr', 'pastml.pasteur.fr']
 
 ADMINS = (('Anna Zhukova', 'anna.zhukova@pasteur.fr'), )
 MANAGERS = (('Anna Zhukova', 'anna.zhukova@pasteur.fr'), )
