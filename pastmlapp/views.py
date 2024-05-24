@@ -143,8 +143,8 @@ def analysis(request, id):
                                root_date=root_date,
                                model=form.cleaned_data['model'] if 'model' in form.cleaned_data and form.cleaned_data['model'] else F81,
                                prediction_method=form.cleaned_data['prediction_method'],
-                               name_column=columns[0], html_compressed=html_compressed, html=html, email=form.cleaned_data['email'],
-                               title=form.cleaned_data['title'], url=Site.objects.get_current(request=request).domain,
+                               name_column=columns[0], html_compressed=html_compressed, html=html, email=None,
+                               title='', url=Site.objects.get_current(request=request).domain,
                                work_dir=work_dir, no_trimming=form.cleaned_data['no_trimming'],
                                timeline_type=form.cleaned_data['timeline_type'])
 

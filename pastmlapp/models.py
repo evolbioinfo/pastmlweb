@@ -76,10 +76,10 @@ class Analysis(models.Model):
     prediction_method = models.CharField(max_length=128, default=MPPA, choices=METHOD_CHOICES,
                                          help_text=u'Ancestral state prediction method.')
 
-    email = models.EmailField(default=None, blank=True, null=True,
-                              help_text=u"(optional) To receive an email once the PastML reconstruction is ready.")
-    title = models.CharField(max_length=128, default='PastML reconstruction is ready!', blank=True, null=True,
-                             help_text=u"The title to be used in the email.")
+    # email = models.EmailField(default=None, blank=True, null=True,
+    #                           help_text=u"(optional) To receive an email once the PastML reconstruction is ready.")
+    # title = models.CharField(max_length=128, default='PastML reconstruction is ready!', blank=True, null=True,
+    #                          help_text=u"The title to be used in the email.")
 
     no_trimming = models.BooleanField(default=False, help_text=u"Keep all, even minor, nodes "
                                                                u"(even if they make the visualisation cluttered).")
